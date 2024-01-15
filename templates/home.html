@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Mandarin Placement Quiz</title>
+</head>
+<body>
+    <h1>Mandarin Placement Quiz</h1>
+	<br>
+	<p>Press the button to start the test.</p>
+	<form class="empty" action="{{ url_for('start') }}" method="post">
+        <button type="submit">Next</button>
+    </form>
+</body>
+</html>
