@@ -1,16 +1,7 @@
-from catsim.initialization import RandomInitializer
-from catsim.selection import MaxInfoSelector
-from catsim.estimation import NumericalSearchEstimator
-from catsim.stopping import *
-from catsim.irt import see
-import numpy as np
-import json
-from flask import Flask, render_template, request, redirect, url_for, make_response
+from flask import Flask, render_template, request, redirect, make_response
 import instances
 
 app = Flask(__name__)
-selector = MaxInfoSelector()
-estimater = NumericalSearchEstimator()
 
 # Route for the home page
 @app.route('/', methods=['GET'])
