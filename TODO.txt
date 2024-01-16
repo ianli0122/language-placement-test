@@ -3,6 +3,16 @@
     - make user sessions save when they answer a question
 - Password integration
     - create password from student_id?
+
+- we can change the system to be more password-friendly by creating some new files
+    - students.json can just be a json array of ids, these will be the only allowed ids for login
+    - student_data.json can be for storing student data (theta, whether they have taken the test, etc)
+        - when we start the program, we will need to make sure that data for each student id exists. if not, we will have to generate some blank data for each student
+        - this can be a dict of ids to more dicts
+        - these "subdicts" can store theta, questions, question responses (correct or not), whether or not they have completed the test, etc
+    - we will then need to probably update instances.py, and/or make a new python file to easily manage sessions and students
+        - this will be thought out more later
+
 - Add admin view
     - Dotenv for private variables
     - make admin view export csv file instead of writing to it in program, so we can change the internal data file to json
