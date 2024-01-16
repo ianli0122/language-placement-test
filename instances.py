@@ -91,5 +91,5 @@ def calc_new_theta(instance: Instance):
     return _estimater.estimate(None, _questions_np, instance.questions_answered, instance.responses, instance.theta)
 
 def export_data(instance: Instance):
-	with open("scores.csv", mode='a', newline='') as file:
+	with open("scores.csv", mode='a') as file:
 		csv.writer(file).writerow([instance.student_id, instance.theta])
