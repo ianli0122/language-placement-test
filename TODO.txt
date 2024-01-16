@@ -1,4 +1,5 @@
 - Time out user sessions
+- Password integration
 - Website hosting
 - Testing bank
     - Implement testing bank
