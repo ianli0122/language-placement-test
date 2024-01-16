@@ -7,7 +7,12 @@
     <title>Mandarin Placement Quiz</title>
 </head>
 <body>
-    <h1>Mandarin Placement Quiz</h1>
+    <div class="topbar">
+        <h1>Mandarin Placement Quiz</h1>
+    </div>
+    <div class="questioncounter">
+        <h3>{{ questionnumber }} / 20</h3>
+    </div>
     <br>
     <form action="{{ url_for('submit') }}" method="post">
         <p>{{ question }}</p>

@@ -59,8 +59,8 @@ def remove_instance(id: str) -> None:
 
 _selector = MaxInfoSelector()
 _estimater = NumericalSearchEstimator()
-_item_stopper = MaxItemStopper(30)
-_error_stopper = MinErrorStopper(0.6)
+_item_stopper = MaxItemStopper(20)
+_error_stopper = MinErrorStopper(0.8)
 
 #Import questions file, format to compatible numpy array
 with open("questions.json", encoding="utf8") as questionFile:

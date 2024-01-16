@@ -26,10 +26,10 @@ def create_question_page():
     # check if instance needs to stop
     if instances.check_stop(instance):
         instances.remove_instance(id)
-        return render_template('result.html', score=instance.theta)
+        return render_template('result.html')
     
     question, options = instances.get_question_data(instance.start_answering_question())
-    return render_template('question.html', question=question, options=options)
+    return render_template('question.html', question=question, options=options, questionnumber = len(instance.questions_answered))
 
 # Route to handle form submission
 @app.route('/submit', methods=['POST'])

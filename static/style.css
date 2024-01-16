@@ -6,9 +6,24 @@ body {
 }
 
 h1 {
-    color: #333;
+    color: #f0f0f0;
     text-align: center;
-    font-size: 300%;
+    font-size: 200%;
+}
+
+.topbar {
+    overflow: hidden;
+    background-color: #2d9ccc;
+}
+
+.questioncounter {
+    overflow: hidden;
+    background-color: #5c5c5c;
+}
+
+.questioncounter h3 {
+    padding-left: 20px;
+    color: #f0f0f0;
 }
 
 form {
@@ -32,6 +47,7 @@ p {
     color: #333;
     margin-bottom: 15px;
     text-align: center;
+    font-weight: 600;
 }
 
 label {
@@ -44,7 +60,7 @@ input[type="radio"] {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #2d9ccc;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -54,6 +70,5 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #0c77a6;
 }
-
