@@ -13,8 +13,10 @@ def home():
 
 @app.route('/start', methods=['POST'])
 def start():
-    resp = make_response(redirect('/question')) # magic function that gets the user, im not sure if this works
-    resp.set_cookie('id', instances.create_instance()) # this will create a cookie named "id" for the user, which can be get later
+    resp = make_response(redirect('/question')) # redirects users
+    id = instances.create_instance()
+    resp.set_cookie('id', id) # this will create a cookie named "id" for the user, which can be get later
+    instances.get_instance(id).set_student_id(request.form.get('student_id')) # sets student id
     return resp
 
 # this function will return question page
@@ -25,6 +27,7 @@ def create_question_page():
     
     # check if instance needs to stop
     if instances.check_stop(instance):
+        instances.export_data(instance)
         instances.remove_instance(id)
         return render_template('result.html')
     

@@ -35,13 +35,6 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form.empty {
-    background-color: #f0f0f0;
-    border-radius: 0px;
-    box-shadow: 0 0 0px;
-    text-align: center;
-}
-
 p {
     font-size: 1.2em;
     color: #333;
@@ -58,6 +51,8 @@ label {
 input[type="radio"] {
     margin-right: 5px;
 }
+
+
 
 button {
     background-color: #2d9ccc;

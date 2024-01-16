@@ -18,7 +18,7 @@
         <p>{{ question }}</p>
         {% for option in options %}
             <label>
-                <input type="radio" name="answer" value="{{ option }}"> {{ option }}
+                <input type="radio" name="answer" value="{{ option }}" required> {{ option }}
             </label><br>
         {% endfor %}
         <br>

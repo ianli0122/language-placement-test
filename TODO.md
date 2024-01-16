@@ -1,0 +1,6 @@
+- Time out user sessions
+- Website hosting
+- Testing bank
+    - Implement testing bank
+    - Test bank calibration
+- Nicer UI (maybe animations?)

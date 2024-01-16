@@ -11,9 +11,26 @@
         <h1>Mandarin Placement Quiz</h1>
     </div>
 	<br>
-	<p>Press the button to start the test.</p>
-	<form class="empty" action="{{ url_for('start') }}" method="post">
+	<form onsubmit="return validateForm()"action="{{ url_for('start') }}" method="post">
+        <label for="student_id">Student ID:</label>
+        <input type="text" id="student_id" name="student_id" required>
+        <span id="validationMessage" style="color: red;"></span>
+        <br>
+        <br>
         <button type="submit">Next</button>
     </form>
+    <script>
+        function validateForm() {
+            var pattern = /^1000\d{5}$/;
+            var validationMessageElement = document.getElementById("validationMessage");
+            if (pattern.test(document.getElementById("student_id").value)) {
+                validationMessageElement.textContent = ""
+                return true;
+            } else {
+                validationMessageElement.textContent = "Please enter a valid student ID (1000xxxxx)"
+                return false;
+            }
+        }
+    </script>
 </body>
 </html>
