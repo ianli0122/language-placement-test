@@ -1,5 +1,11 @@
 - Time out user sessions
+    - change internal variable "id" to "session"
+    - make user sessions save when they answer a question
 - Password integration
+    - create password from student_id?
+- Add admin view
+    - Dotenv for private variables
+    - make admin view export csv file instead of writing to it in program, so we can change the internal data file to json
 - Website hosting
 - Testing bank
     - Implement testing bank
