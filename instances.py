@@ -56,6 +56,10 @@ def create_instance() -> str:
 	_instance_dict[id] = Instance()
 	return id
 
+# checks if instance exists
+def has_instance(id: str) -> bool:
+	return id in _instance_dict
+
 # gets an instance 
 def get_instance(id: str) -> Instance:
 	return _instance_dict[id]

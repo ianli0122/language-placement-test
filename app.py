@@ -23,6 +23,10 @@ def start():
 @app.route('/question', methods=['GET'])
 def create_question_page():
     id = request.cookies.get('id') # gets the id (stored as a cookie)
+
+    if not instances.has_instance(id):
+        return redirect('/')
+
     instance = instances.get_instance(id)
     
     # check if instance needs to stop
