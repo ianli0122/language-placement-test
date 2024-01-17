@@ -4,6 +4,19 @@ import students, json, random
 from abc import abstractmethod
 from typing import Self
 
+# get json data
+
+def _get_file(file: str) -> list | dict:
+	with open(file, "r") as file:
+		return json.load(file)
+	
+_rmcqs: list[dict[str: any]] = _get_file("data/rmcq.json")
+_lmcqs: list[dict[str: any]] = _get_file("data/lmcq.json")
+_sfrqs: dict[str: list[str]] = _get_file("data/sfrq.json")
+_wfrqs: dict[str: list[str]] = _get_file("data/wfrq.json")
+
+# session classes
+
 class Session:
 	...
 
