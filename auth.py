@@ -17,3 +17,6 @@ def _gen_password(seed: int) -> str:
 
 def get_student_password(id: int) -> str:
 	return _gen_password(hash(str(id) + _salt))
+
+def check_student_password(id: int, password: str) -> bool:
+	return get_student_password(id) == password
