@@ -1,7 +1,6 @@
 # this is also an imrpoved copy os instances.py
 
-import students
-from random import randint
+import students, json, random
 from abc import abstractmethod
 from typing import Self
 
@@ -26,7 +25,7 @@ def is_session_open(id: str) -> bool: # NOTE do we still need this?
 	return students.get_student_data(id)["in-session"]
 
 def _generate_session_id() -> SessionID:
-	return SessionID(''.join([chr(randint(0x4E00, 0x9FFF)) for _ in range(100)]))
+	return SessionID(''.join([chr(random.randint(0x4E00, 0x9FFF)) for _ in range(100)]))
 
 # gets a new session, returns the SessionID (wrapper for a string) and a Session
 # we return SessionID instead of str so we dont get id and session id mixed up
