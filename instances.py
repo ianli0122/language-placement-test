@@ -1,8 +1,7 @@
 from catsim.selection import MaxInfoSelector
 from catsim.estimation import NumericalSearchEstimator
 from catsim.stopping import MaxItemStopper, MinErrorStopper
-from catsim.initialization import RandomInitializer
-from random import randint
+from random import randint, random
 import numpy as np
 import json
 import csv
@@ -14,11 +13,11 @@ class Instance:
 	student_id: int
 
 	# these are variables for storing data about the next question
-	question_answer: any
+	question_answers: list[int]
 
 	# do not use this, use create_instance()
 	def __init__(self):
-		self.theta = RandomInitializer("uniform", (-0.5, 0.5)).initialize()
+		self.theta = random() + 1 # generate float between 1-2
 		self.questions_answered = []
 		self.responses = []
 		self.student_id = -1
@@ -29,17 +28,16 @@ class Instance:
 	def set_student_id(self, student_id: int):
 		self.student_id = student_id
 
-	def start_answering_question(self) -> int:
+	def start_answering_question(self) -> list[int]:
 		print(_instance_dict)
-		question_index, correct_answer = select_question(self) # get question
-		self.questions_answered.append(question_index)
-		self.question_answer = correct_answer
+		question_index, self.question_answers = select_question(self) # get question
+		for i in question_index: self.questions_answered.append(i) # append questions_answered
 		return question_index
 
 	# accepts the answers, returns whether or not they answered correct along with the level
-	def answer_question(self, answer: str):
-		self.responses.append(self.question_answer == answer)
-		self.theta = calc_new_theta(self) 
+	def answer_question(self, answer: list[int]):
+		for i in range(len(answer)): self.responses.append(answer[i] == self.question_answers[i]) # append bools to responses
+		self.theta = calc_new_theta(self) # calculate new theta
 
 # generates a random 100 char string
 def generate_id() -> str:
@@ -69,27 +67,51 @@ def remove_instance(id: str) -> None:
 
 _selector = MaxInfoSelector()
 _estimater = NumericalSearchEstimator()
-_item_stopper = MaxItemStopper(20)
-_error_stopper = MinErrorStopper(0.8)
+_item_stopper = MaxItemStopper(25)
+_error_stopper = MinErrorStopper(0.6)
 
 #Import questions file, format to compatible numpy array
-with open("questions.json", encoding="utf8") as questionFile:
-    _questions: list[(str, int, list[str], str)] = list(map(tuple, json.load(questionFile)))
+with open("data/rmcq.json", encoding="utf8") as questionFile:
+	_questions: list[str, str, int, list[str], int] = [] # instructions: str, question: str, diff: int, selection: list[str], correct: int
+	_connected_questions = [] # list[list[int]] connected questions
+	for i in json.load(questionFile):
+		if type(i["question_data"]) == dict: # check if connected questions
+			_questions.append([i["text"], i["question_data"]["question"], i["difficulty"], i["question_data"]["options"], i["question_data"]["correct"]])
+		else:
+			connected_question = [] # temp var to store grouped problem
+			for q in i["question_data"]:
+				connected_question.append(len(_questions)) # append index
+				_questions.append([i["text"], q["question"], i["difficulty"], q["options"], q["correct"]]) # append to main _questions list
+			_connected_questions.append(connected_question) # append indexes to _connected questions
     
 # parse questions into something else that the library understands
-_questions_np = np.array([[1, level, 1 / len(answers), 1] for _, level, answers, _ in _questions])
+_questions_np = np.array([[1, level, 1 / len(answers), 1] for _, _, level, answers, _ in _questions])
 
-def get_question_data(index: int) -> (str, list[str]):
-    return _questions[index][0], _questions[index][2]
+def get_question_data(index: list[int]) -> (str, list[str], list[list[str]]):
+	questions, selections = [], []
+	for i in index:
+		questions.append(_questions[i][1])
+		selections.append(_questions[i][3])
+	return _questions[index[0]][0], questions, selections
 
 # this will be called from instance
-def select_question(instance: Instance) -> (int, str):
-    question_number = _selector.select(None, _questions_np, instance.questions_answered, instance.theta)
-    return question_number, _questions[question_number][3] # returns index and correct answer
+def select_question(instance: Instance) -> (list[int], list[int]):
+	question_number = _selector.select(None, _questions_np, instance.questions_answered, instance.theta) # algorithm selects question index
+	for i in _connected_questions:
+		if question_number in i: # check if index in _connected_questions
+			indexes = i 
+			answer = []
+			for q in i:
+				answer.append(_questions[q][4])
+			return indexes, answer # return list of indexes, answers
+	return [question_number], [_questions[question_number][4]] # else, return a single index and answer
 
 def check_stop(instance: Instance) -> bool:
 	questions_answered_np = np.array([arr for i, arr in enumerate(_questions_np) if i in instance.questions_answered])
-	return _item_stopper.stop(None, questions_answered_np) or len(instance.questions_answered) > 5 and _error_stopper.stop(None, questions_answered_np, instance.theta)
+	try:
+		return _item_stopper.stop(None, questions_answered_np) or len(instance.questions_answered) > 5 and _error_stopper.stop(None, questions_answered_np, instance.theta)
+	except ValueError:
+		return True
 
 def calc_new_theta(instance: Instance):
     return _estimater.estimate(None, _questions_np, instance.questions_answered, instance.responses, instance.theta)
