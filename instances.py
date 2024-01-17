@@ -14,11 +14,11 @@ class Instance:
 	student_id: int
 
 	# these are variables for storing data about the next question
-	question_answer: list[int]
+	question_answers: list[int]
 
 	# do not use this, use create_instance()
 	def __init__(self):
-		self.theta = RandomInitializer("uniform", (-0.5, 0.5)).initialize()
+		self.theta = RandomInitializer("normal", (-0.5, 0.5)).initialize()
 		self.questions_answered = []
 		self.responses = []
 		self.student_id = -1
@@ -31,14 +31,13 @@ class Instance:
 
 	def start_answering_question(self) -> list[int]:
 		print(_instance_dict)
-		question_index, self.question_answer = select_question(self) # get question
+		question_index, self.question_answers = select_question(self) # get question
 		for i in question_index: self.questions_answered.append(i) # append questions_answered
 		return question_index
 
 	# accepts the answers, returns whether or not they answered correct along with the level
-	def answer_question(self, answer: str):
-		self.responses.append(self.question_answer == answer)
-		self.theta = calc_new_theta(self) 
+	def answer_question(self, answer: list[int]):
+		for i in range(len(answer)): self.responses.append(answer[i] == self.question_answers[i]) # append bools to responses
 
 # generates a random 100 char string
 def generate_id() -> str:
@@ -89,7 +88,7 @@ with open("data/rmcq.json", encoding="utf8") as questionFile:
 _questions_np = np.array([[1, level, 1 / len(answers), 1] for _, _, level, answers, _ in _questions])
 
 def get_question_data(index: list[int]) -> (str, list[str], list[list[str]]):
-	questions, selections = []
+	questions, selections = [], []
 	for i in index:
 		questions.append(_questions[i][1])
 		selections.append(_questions[i][3])

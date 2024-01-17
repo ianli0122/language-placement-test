@@ -35,6 +35,7 @@ def create_question_page():
         instances.remove_instance(id)
         return render_template('result.html')
     
+    global questions
     instruction, questions, options = instances.get_question_data(instance.start_answering_question())
     return render_template('question.html', instruction=instruction, questions=questions, options=options, questionnumber = len(instance.questions_answered)) # TODO small bug here with paragraph questions, automatically skips to # of last question
 
@@ -43,9 +44,11 @@ def create_question_page():
 def submit():
     id = request.cookies.get('id')
     instance = instances.get_instance(id)
-    user_answer = request.form.get('answer')
+    user_answer = []
+    for i in range(len(questions)):
+        user_answer.append(request.form.get(i))
     instance.answer_question(user_answer)
     return redirect('/question')
 
 if __name__ == '__main__':
-    app.run(port=3001, host="0.0.0.0")
+    app.run(port=3001, host="0.0.0.0", debug=True)

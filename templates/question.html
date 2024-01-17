@@ -18,10 +18,13 @@
         {% for question in questions %}
             <div class="question">
                 <p>{{ question }}</p>
-                {% for index, option in enumerate(options[loop.index0]) %}
+                {% set group_name = loop.index0 %}
+                {% set index = 0 %}
+                {% for option in options[loop.index0] %}
                     <label>
-                        <input type="radio" name="answers[{{ loop.index0 }}]" value="{{ index }}" required> {{ option }}
-                    </label><br>
+                        <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }}
+                    </label>
+                    {% set index = index + 1 %}
                 {% endfor %}
             </div>
         {% endfor %}
