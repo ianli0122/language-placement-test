@@ -35,8 +35,8 @@ def create_question_page():
         instances.remove_instance(id)
         return render_template('result.html')
     
-    question, options = instances.get_question_data(instance.start_answering_question())
-    return render_template('question.html', question=question, options=options, questionnumber = len(instance.questions_answered))
+    instruction, questions, options = instances.get_question_data(instance.start_answering_question())
+    return render_template('question.html', instruction=instruction, questions=questions, options=options, questionnumber = len(instance.questions_answered)) # TODO small bug here with paragraph questions, automatically skips to # of last question
 
 # Route to handle form submission
 @app.route('/submit', methods=['POST'])

@@ -14,7 +14,7 @@ class Instance:
 	student_id: int
 
 	# these are variables for storing data about the next question
-	question_answer: any
+	question_answer: list[int]
 
 	# do not use this, use create_instance()
 	def __init__(self):
@@ -29,11 +29,10 @@ class Instance:
 	def set_student_id(self, student_id: int):
 		self.student_id = student_id
 
-	def start_answering_question(self) -> int:
+	def start_answering_question(self) -> list[int]:
 		print(_instance_dict)
-		question_index, correct_answer = select_question(self) # get question
-		self.questions_answered.append(question_index)
-		self.question_answer = correct_answer
+		question_index, self.question_answer = select_question(self) # get question
+		for i in question_index: self.questions_answered.append(i) # append questions_answered
 		return question_index
 
 	# accepts the answers, returns whether or not they answered correct along with the level
@@ -73,19 +72,40 @@ _item_stopper = MaxItemStopper(20)
 _error_stopper = MinErrorStopper(0.8)
 
 #Import questions file, format to compatible numpy array
-with open("questions.json", encoding="utf8") as questionFile:
-    _questions: list[(str, int, list[str], str)] = list(map(tuple, json.load(questionFile)))
+with open("data/rmcq.json", encoding="utf8") as questionFile:
+	_questions: list[str, str, int, list[str], int] = [] # instructions: str, question: str, diff: int, selection: list[str], correct: int
+	_connected_questions = [] # list[list[int]] connected questions
+	for i in json.load(questionFile):
+		if type(i["question_data"]) == dict: # check if connected questions
+			_questions.append([i["instructions"], i["question_data"]["question"], i["difficulty"], i["question_data"]["options"], i["question_data"]["correct"]])
+		else:
+			connected_question = [] # temp var to store grouped problem
+			for q in i["question_data"]:
+				connected_question.append(len(_questions)) # append index
+				_questions.append([i["instructions"], q["question"], i["difficulty"], q["options"], q["correct"]]) # append to main _questions list
+			_connected_questions.append(connected_question) # append indexes to _connected questions
     
 # parse questions into something else that the library understands
-_questions_np = np.array([[1, level, 1 / len(answers), 1] for _, level, answers, _ in _questions])
+_questions_np = np.array([[1, level, 1 / len(answers), 1] for _, _, level, answers, _ in _questions])
 
-def get_question_data(index: int) -> (str, list[str]):
-    return _questions[index][0], _questions[index][2]
+def get_question_data(index: list[int]) -> (str, list[str], list[list[str]]):
+	questions, selections = []
+	for i in index:
+		questions.append(_questions[i][1])
+		selections.append(_questions[i][3])
+	return _questions[index[0]][0], questions, selections
 
 # this will be called from instance
-def select_question(instance: Instance) -> (int, str):
-    question_number = _selector.select(None, _questions_np, instance.questions_answered, instance.theta)
-    return question_number, _questions[question_number][3] # returns index and correct answer
+def select_question(instance: Instance) -> (list[int], list[int]):
+	question_number = _selector.select(None, _questions_np, instance.questions_answered, instance.theta) # algorithm selects question index
+	for i in _connected_questions:
+		if question_number in i: # check if index in _connected_questions
+			indexes = i 
+			answer = []
+			for q in i:
+				answer.append(_questions[q][4])
+			return indexes, answer # return list of indexes, answers
+	return [question_number], [_questions[question_number][4]] # else, return a single index and answer
 
 def check_stop(instance: Instance) -> bool:
 	questions_answered_np = np.array([arr for i, arr in enumerate(_questions_np) if i in instance.questions_answered])
