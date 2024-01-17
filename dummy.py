@@ -3,7 +3,8 @@
 
 import sys, json, random
 
-def generate_mcq() -> None:
+def generate_rmcq() -> None:
+	print("generating rmcq.json...")
 	questions = []
 
 	# generate 30 single reading questions
@@ -36,8 +37,19 @@ def generate_mcq() -> None:
 			]
 		})
 	
-	# generate 10 single listening questions
-	for i in range(10):
+	# shuffle array so that we can test
+	# not really necessary 
+	# random.shuffle(questions)
+
+	with open("rmcq.json", "w") as file:
+		json.dump(questions, file)
+
+def generate_lmcq() -> None:
+	print("generating lmcq.json...")
+	questions = []
+
+	# generate 30 single listening questions
+	for i in range(30):
 		difficulty = random.randint(1, 5)
 		audio_num = random.randint(1, 4)
 		questions.append({
@@ -51,8 +63,8 @@ def generate_mcq() -> None:
 			}
 		})
 
-	# generate 10 multi listening questions
-	for i in range(10):
+	# generate 20 multi listening questions
+	for i in range(20):
 		difficulty = random.randint(1, 5)
 		audio_num = random.randint(1, 4)
 		questions.append({
@@ -67,27 +79,26 @@ def generate_mcq() -> None:
 				} for j in range(random.randint(3, 6)) # generates a random number of additional questions for each mutli question
 			]
 		})
-
-	# shuffle array so that we can test
-	# not really necessary 
-	# random.shuffle(questions)
-
-	with open("mcq.json", "w") as file:
+	
+	with open("lmcq.json", "w") as file:
 		json.dump(questions, file)
 
+
 def generate_frq() -> None:
-	...
+	print("generating frq.json...")
+	with open("frq.json", "w") as file:
+		json.dump({str(i): [f"FRQ prompt {j + 1} difficulty={i}" for j in range(5)] for i in range(1, 6)}, file)
 
 if __name__ == "__main__":
 	if len(sys.argv) != 2:
 		print(f"Invalid number of parameters. (1 required, {len(sys.argv) - 1} found)")
 		sys.exit(1)
-	elif "mcq" in sys.argv:
-		print("generating mcq.json...")
-		generate_mcq()
+	elif "rmcq" in sys.argv:
+		generate_rmcq()
+	elif "lmcq" in sys.argv:
+		generate_lmcq()
 	elif "frq" in sys.argv:
-		print("generating frq.json...")
 		generate_frq()
 	else:
-		print(f"Second argument must be 'mcq' or 'frq'. ({sys.argv[1]} found)")
+		print(f"Second argument must be 'lmcq', 'rmcq' or 'frq'. ({sys.argv[1]} found)")
 		sys.exit(1)
