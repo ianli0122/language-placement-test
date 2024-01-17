@@ -38,7 +38,7 @@ class _SpeakingSession(Session):
 class _WritingSession(Session):
 	...
 
-def is_session_open(id: str) -> bool:
+def is_session_open(id: str) -> bool: # NOTE do we still need this?
 	return students.get_student_data(id)["in-session"]
 
 def _generate_session_id() -> SessionID:
@@ -50,7 +50,7 @@ def _generate_session_id() -> SessionID:
 def open_session(id: str) -> (SessionID, Session):	
 	data = students.get_student_data(id)
 	if not(data["in-session"]) or data["stage"] == 4:
-		return None, None
+		return None, None 
 	
 	session_id = _generate_session_id()
 	match data: # TODO create appropiate constructors
