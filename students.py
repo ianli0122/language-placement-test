@@ -36,10 +36,12 @@ _student_data = {str(id): { # default data
 	},
 	"recording": {
 		"level": "",
-		"prompt": 0
+		"prompt": 0,
+		"response": ""
 	},
 	"writing": {
 		"level": "",
-		"prompt": 0
+		"prompt": 0,
+		"response": ""
 	}
 } for id in _student_ids} | _get_student_data() # this creates defaults for the student data and writes the current student data over it
