@@ -109,7 +109,7 @@ def _() -> dict:
 
 @_data_function("student_ids", "Generates student_ids.json, a file containing dummy student IDs which are supposed to emulate IDs of real students taking the test.")
 def _() -> list:
-	return [100_000_000 + i for i in range(100)]
+	return [str(100_000_000 + i) for i in range(100)]
 
 def _gen(key: str) -> None:
 	with open(f"data/{key}.json", "w") as file:
