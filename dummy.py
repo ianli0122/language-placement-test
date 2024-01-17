@@ -5,12 +5,13 @@ import sys, json, random
 from typing import Callable
 
 _func_dict: dict[str: dict[str: any]] = {}
+_special = ["all", "help"]
 
 # decorator for generation functions
 def _data_function(name: str, desc: str = None, aliases: list[str] = []):
 	desc = f'Generates {name}.json.' if desc is None else desc
 	def wrapper(func: Callable[[], list | dict]):
-		if name not in _func_dict:
+		if name not in _func_dict and name not in _special:
 			_func_dict[name] = {
 				"desc": desc,
 				"func": func,
@@ -20,7 +21,7 @@ def _data_function(name: str, desc: str = None, aliases: list[str] = []):
 			raise NameError(f"Cannot use {name} for function {func}, as it is already in use")
 
 		for alias in aliases:
-			if alias not in _func_dict:
+			if alias not in _func_dict and alias not in _special:
 				_func_dict[alias] = name
 			else:
 				raise NameError(f"Cannot use {alias} as an alias for {name}, as it is already in use")
@@ -129,14 +130,12 @@ def _gen(key: str) -> None:
 def _print_help() -> None:
 	print("Generator for dummy data for this project.")
 	print(f"Usage: python dummy.py (OPTION)\n\nOptions:")
-	print("\n".join([f"  {k} - {v["desc"]}" for k, v in _func_dict.items()]))
+	print("\n".join([f"  {", ".join([k] + v["aliases"])} - {v["desc"]}" for k, v in _func_dict.items() if type(v) == dict]))
 	print("  help - Prints this help page.")
 	print("  all - Generates all files. Refer to above.")
 
 if __name__ == "__main__":
-	special = ["all", "help"]
-
-	if len(sys.argv) != 2 or sys.argv[1] not in _func_dict and sys.argv[1] not in special:
+	if len(sys.argv) != 2 or sys.argv[1] not in _func_dict and sys.argv[1] not in _special:
 		_print_help()
 		sys.exit(1)
 	elif sys.argv[1] == "help":
@@ -144,5 +143,7 @@ if __name__ == "__main__":
 	elif sys.argv[1] == "all":
 		for key in _func_dict:
 			_gen(key)
+	elif type(_func_dict[sys.argv[1]]) == str:
+		_gen(_func_dict[sys.argv[1]])
 	else:
 		_gen(sys.argv[1])
