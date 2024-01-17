@@ -3,6 +3,7 @@
 
 import sys, json, random
 
+# reading multiple choice questions
 def generate_rmcq() -> None:
 	print("generating rmcq.json...")
 	questions = []
@@ -44,6 +45,7 @@ def generate_rmcq() -> None:
 	with open("rmcq.json", "w") as file:
 		json.dump(questions, file)
 
+# listening multiple choice questions
 def generate_lmcq() -> None:
 	print("generating lmcq.json...")
 	questions = []
@@ -83,11 +85,17 @@ def generate_lmcq() -> None:
 	with open("lmcq.json", "w") as file:
 		json.dump(questions, file)
 
+# writing prompts
+def generate_wfrq() -> None:
+	print("generating wfrq.json...")
+	with open("wfrq.json", "w") as file:
+		json.dump({str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
 
-def generate_frq() -> None:
-	print("generating frq.json...")
-	with open("frq.json", "w") as file:
-		json.dump({str(i): [f"FRQ prompt {j + 1} difficulty={i}" for j in range(5)] for i in range(1, 6)}, file)
+# speaking prompts
+def generate_sfrq() -> None:
+	print("generating sfrq.json...")
+	with open("sfrq.json", "w") as file:
+		json.dump({str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
 
 if __name__ == "__main__":
 	if len(sys.argv) != 2:
@@ -97,12 +105,15 @@ if __name__ == "__main__":
 		generate_rmcq()
 	elif "lmcq" in sys.argv:
 		generate_lmcq()
-	elif "frq" in sys.argv:
-		generate_frq()
+	elif "wfrq" in sys.argv:
+		generate_wfrq()
+	elif "sfrq" in sys.argv:
+		generate_sfrq()
 	elif "all" in sys.argv:
 		generate_rmcq()
 		generate_lmcq()
-		generate_frq()
+		generate_wfrq()
+		generate_sfrq()
 	else:
-		print(f"Second argument must be 'lmcq', 'rmcq', 'frq', or 'all'. ({sys.argv[1]} found)")
+		print(f"Second argument must be 'lmcq', 'rmcq', 'wfrq', 'sfrq', or 'all'. ({sys.argv[1]} found)")
 		sys.exit(1)
