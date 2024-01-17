@@ -1,10 +1,10 @@
 # script for generating dummy questions for testing. 
-# usage: python generate.py
+# usage: python dummy.py
 
 import sys, json, random
 from typing import Callable
 
-_func_dict = {}
+_func_dict: dict[str: dict[str: any]] = {}
 
 # decorator for generation functions
 def _data_function(name: str, desc: str = None):
@@ -18,7 +18,7 @@ def _data_function(name: str, desc: str = None):
 	return wrapper
 
 # reading multiple choice questions
-@_data_function("rmcq")
+@_data_function("rmcq", "Generates rmcq.json, a file containing dummy reading multiple choice questions.")
 def _gen_rmcq() -> list:
 	questions = []
 
@@ -59,7 +59,7 @@ def _gen_rmcq() -> list:
 	return questions
 
 # listening multiple choice questions
-@_data_function("lmcq")
+@_data_function("lmcq", "Generates lmcq.json, a file containing dummy listening multiple choice questions.")
 def _gen_lmcq() -> list:
 	questions = []
 
@@ -98,12 +98,12 @@ def _gen_lmcq() -> list:
 	return questions
 
 # writing prompts
-@_data_function("wfrq")
+@_data_function("wfrq", "Generates wfrq.json, a file containing dummy writing free response questions.")
 def _gen_wfrq() -> dict:
 	return {str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
 # speaking prompts
-@_data_function("sfrq")
+@_data_function("sfrq", "Generates sfrq.json, a file containing dummy speaking free response questions.")
 def _gen_sfrq() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
