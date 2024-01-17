@@ -1,6 +1,15 @@
-# this is essentially a copy of the old instances.py
+"""
+this is essentially an attempt improvement of instances.py
 
-import json
+there are several stages
+	stage 0 = reading
+	stage 1 = listening
+	stage 2 = recording
+	stage 3 = writing
+	stage 4 = finished
+"""
+
+import json, random
 
 with open("data/student_ids.json", "r") as file:
 	_student_ids = json.load(file)
@@ -12,7 +21,25 @@ def _get_student_data() -> dict:
 			return json.load(file)
 	except FileNotFoundError:
 		return {}
-	
-_student_data = {str(id): { # default data
 
+_student_data = {str(id): { # default data
+	"stage": 0, # stage
+	"reading": {
+		"score": random.random() + 1, # theta
+		"answered": [], # questions answered
+		"correct": [] # questions correct
+	},
+	"listening": {
+		"score": random.random() + 1,
+		"answered": [],
+		"correct": []
+	},
+	"recording": {
+		"level": "",
+		"prompt": 0
+	},
+	"writing": {
+		"level": "",
+		"prompt": 0
+	}
 } for id in _student_ids} | _get_student_data() # this creates defaults for the student data and writes the current student data over it
