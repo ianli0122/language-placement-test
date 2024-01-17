@@ -7,13 +7,23 @@ from typing import Callable
 _func_dict: dict[str: dict[str: any]] = {}
 
 # decorator for generation functions
-def _data_function(name: str, desc: str = None):
+def _data_function(name: str, desc: str = None, aliases: list[str] = []):
 	desc = f'Generates {name}.json.' if desc is None else desc
 	def wrapper(func: Callable[[], list | dict]):
-		_func_dict[name] = {
-			"desc": desc,
-			"func": func
-		}
+		if name not in _func_dict:
+			_func_dict[name] = {
+				"desc": desc,
+				"func": func,
+				"aliases": aliases
+			}
+		else:
+			raise NameError(f"Cannot use {name} for function {func}, as it is already in use")
+
+		for alias in aliases:
+			if alias not in _func_dict:
+				_func_dict[alias] = name
+			else:
+				raise NameError(f"Cannot use {alias} as an alias for {name}, as it is already in use")
 		return func
 	return wrapper
 
@@ -107,7 +117,7 @@ def _() -> dict:
 def _() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
-@_data_function("ids", "Generates student_ids.json, a file containing dummy student IDs which are supposed to emulate IDs of real students taking the test.")
+@_data_function("student_ids", "Generates student_ids.json, a file containing dummy student IDs which are supposed to emulate IDs of real students taking the test.", ["ids"])
 def _() -> list:
 	return [str(100_000_000 + i) for i in range(100)]
 
