@@ -1,5 +1,5 @@
 # script for generating dummy questions for testing. 
-# usage: python generate.py (mcq|frq)
+# usage: python generate.py
 
 import sys, json, random
 
