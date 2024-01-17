@@ -12,7 +12,7 @@ there are several stages
 import json, random
 
 with open("data/student_ids.json", "r") as file:
-	_student_ids: list[int] = json.load(file)
+	_student_ids: list[str] = json.load(file)
 
 # have to do this just in case the file doesnt exist
 def _get_student_data() -> dict:
@@ -46,5 +46,5 @@ _student_data: dict[str: dict[str: any]] = {k: v
 			"response": ""
 		}
 	} for id in _student_ids} | _get_student_data()).items() # this creates defaults for the student data and writes the current student data over it
-	if int(k) in _student_ids
+	if k in _student_ids
 }
