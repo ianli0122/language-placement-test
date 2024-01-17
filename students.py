@@ -25,7 +25,7 @@ def _get_student_data() -> dict:
 _student_data: dict[str: dict[str: any]] = {k: v
 	for k, v in ({str(id): { # default data
 		"stage": 0, # stage
-		"session": None, # if session is none, that means they do not have a tab open
+		"in-session": False, # if in-session is False, that means they do not have a tab open
 		"reading": {
 			"score": random.random() + 1, # theta
 			"answered": [], # questions answered
