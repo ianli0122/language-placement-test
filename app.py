@@ -36,8 +36,12 @@ def create_question_page():
         return render_template('result.html')
     
     global questions
-    instruction, questions, options = instances.get_question_data(instance.start_answering_question())
-    return render_template('question.html', instruction=instruction, questions=questions, options=options, questionnumber = len(instance.questions_answered)) # TODO small bug here with paragraph questions, automatically skips to # of last question
+    text, questions, options = instances.get_question_data(instance.start_answering_question()) # get question data
+    if len(questions) == 1: # set question counter (range if multiple questions)
+        questionnumber = len(instance.questions_answered)
+    else:
+        questionnumber = str(len(instance.questions_answered) - len(questions) + 1) + " - " + str(len(instance.questions_answered))
+    return render_template('question.html', text=text, questions=questions, options=options, questionnumber=questionnumber)
 
 # Route to handle form submission
 @app.route('/submit', methods=['POST'])
@@ -45,9 +49,9 @@ def submit():
     id = request.cookies.get('id')
     instance = instances.get_instance(id)
     user_answer = []
-    for i in range(len(questions)):
-        user_answer.append(request.form.get(i))
-    instance.answer_question(user_answer)
+    for i in range(len(questions)): # get user response as a list
+        user_answer.append(int(request.form.get(str(i))))
+    instance.answer_question(user_answer) # check answer
     return redirect('/question')
 
 if __name__ == '__main__':

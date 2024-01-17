@@ -1,8 +1,7 @@
 from catsim.selection import MaxInfoSelector
 from catsim.estimation import NumericalSearchEstimator
 from catsim.stopping import MaxItemStopper, MinErrorStopper
-from catsim.initialization import RandomInitializer
-from random import randint
+from random import randint, random
 import numpy as np
 import json
 import csv
@@ -18,7 +17,7 @@ class Instance:
 
 	# do not use this, use create_instance()
 	def __init__(self):
-		self.theta = RandomInitializer("normal", (-0.5, 0.5)).initialize()
+		self.theta = random() + 1 # generate float between 1-2
 		self.questions_answered = []
 		self.responses = []
 		self.student_id = -1
@@ -38,6 +37,7 @@ class Instance:
 	# accepts the answers, returns whether or not they answered correct along with the level
 	def answer_question(self, answer: list[int]):
 		for i in range(len(answer)): self.responses.append(answer[i] == self.question_answers[i]) # append bools to responses
+		self.theta = calc_new_theta(self) # calculate new theta
 
 # generates a random 100 char string
 def generate_id() -> str:
@@ -67,8 +67,8 @@ def remove_instance(id: str) -> None:
 
 _selector = MaxInfoSelector()
 _estimater = NumericalSearchEstimator()
-_item_stopper = MaxItemStopper(20)
-_error_stopper = MinErrorStopper(0.8)
+_item_stopper = MaxItemStopper(25)
+_error_stopper = MinErrorStopper(0.6)
 
 #Import questions file, format to compatible numpy array
 with open("data/rmcq.json", encoding="utf8") as questionFile:
@@ -76,12 +76,12 @@ with open("data/rmcq.json", encoding="utf8") as questionFile:
 	_connected_questions = [] # list[list[int]] connected questions
 	for i in json.load(questionFile):
 		if type(i["question_data"]) == dict: # check if connected questions
-			_questions.append([i["instructions"], i["question_data"]["question"], i["difficulty"], i["question_data"]["options"], i["question_data"]["correct"]])
+			_questions.append([i["text"], i["question_data"]["question"], i["difficulty"], i["question_data"]["options"], i["question_data"]["correct"]])
 		else:
 			connected_question = [] # temp var to store grouped problem
 			for q in i["question_data"]:
 				connected_question.append(len(_questions)) # append index
-				_questions.append([i["instructions"], q["question"], i["difficulty"], q["options"], q["correct"]]) # append to main _questions list
+				_questions.append([i["text"], q["question"], i["difficulty"], q["options"], q["correct"]]) # append to main _questions list
 			_connected_questions.append(connected_question) # append indexes to _connected questions
     
 # parse questions into something else that the library understands
@@ -108,7 +108,10 @@ def select_question(instance: Instance) -> (list[int], list[int]):
 
 def check_stop(instance: Instance) -> bool:
 	questions_answered_np = np.array([arr for i, arr in enumerate(_questions_np) if i in instance.questions_answered])
-	return _item_stopper.stop(None, questions_answered_np) or len(instance.questions_answered) > 5 and _error_stopper.stop(None, questions_answered_np, instance.theta)
+	try:
+		return _item_stopper.stop(None, questions_answered_np) or len(instance.questions_answered) > 5 and _error_stopper.stop(None, questions_answered_np, instance.theta)
+	except ValueError:
+		return True
 
 def calc_new_theta(instance: Instance):
     return _estimater.estimate(None, _questions_np, instance.questions_answered, instance.responses, instance.theta)
