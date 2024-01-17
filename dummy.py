@@ -42,7 +42,7 @@ def generate_rmcq() -> None:
 	# not really necessary 
 	# random.shuffle(questions)
 
-	with open("rmcq.json", "w") as file:
+	with open("data/rmcq.json", "w") as file:
 		json.dump(questions, file)
 
 # listening multiple choice questions
@@ -82,19 +82,19 @@ def generate_lmcq() -> None:
 			]
 		})
 	
-	with open("lmcq.json", "w") as file:
+	with open("data/lmcq.json", "w") as file:
 		json.dump(questions, file)
 
 # writing prompts
 def generate_wfrq() -> None:
 	print("generating wfrq.json...")
-	with open("wfrq.json", "w") as file:
+	with open("data/wfrq.json", "w") as file:
 		json.dump({str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
 
 # speaking prompts
 def generate_sfrq() -> None:
 	print("generating sfrq.json...")
-	with open("sfrq.json", "w") as file:
+	with open("data/sfrq.json", "w") as file:
 		json.dump({str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
 
 if __name__ == "__main__":
