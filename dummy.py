@@ -3,6 +3,19 @@
 
 import sys, json, random
 
+_func_dict = {}
+
+# decorator for generation functions
+def _data_function(name: str, desc: str = None):
+	desc = f'Generates {name}.json.' if desc is None else desc
+	def wrapper(func: callable[[], list | dict]):
+		_func_dict[name] = {
+			"desc": desc,
+			"func": func
+		}
+		return func
+	return wrapper
+
 # reading multiple choice questions
 def generate_rmcq() -> None:
 	print("generating rmcq.json...")
