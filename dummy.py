@@ -107,6 +107,11 @@ def _gen_wfrq() -> dict:
 def _gen_sfrq() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
+def _gen(key: str) -> None:
+	with open(f"data/{key}.json", "w") as file:
+		print(f"Generating {key}.json...")
+		json.dump(_func_dict[key]["func"](), file)
+
 def _print_help() -> None:
 	print("Generator for dummy data for this project.")
 	print(f"Usage: python dummy.py (OPTION)\n\nOptions:")
@@ -122,8 +127,8 @@ if __name__ == "__main__":
 		sys.exit(1)
 	elif sys.argv[1] == "help":
 		_print_help()
-		sys.exit(0)
 	elif sys.argv[1] == "all":
-		# TODO
-		sys.exit(0)
-	
+		for key in _func_dict:
+			_gen(key)
+	else:
+		_gen(sys.argv[1])
