@@ -12,7 +12,7 @@ there are several stages
 import json, random
 
 with open("data/student_ids.json", "r") as file:
-	_student_ids = json.load(file)
+	_student_ids: list[int] = json.load(file)
 
 # have to do this just in case the file doesnt exist
 def _get_student_data() -> dict:
@@ -22,26 +22,29 @@ def _get_student_data() -> dict:
 	except FileNotFoundError:
 		return {}
 
-_student_data = {str(id): { # default data
-	"stage": 0, # stage
-	"reading": {
-		"score": random.random() + 1, # theta
-		"answered": [], # questions answered
-		"correct": [] # questions correct
-	},
-	"listening": {
-		"score": random.random() + 1,
-		"answered": [],
-		"correct": []
-	},
-	"recording": {
-		"level": "",
-		"prompt": 0,
-		"response": ""
-	},
-	"writing": {
-		"level": "",
-		"prompt": 0,
-		"response": ""
-	}
-} for id in _student_ids} | _get_student_data() # this creates defaults for the student data and writes the current student data over it
+_student_data: dict[str: dict[str: any]] = {k: v
+	for k, v in ({str(id): { # default data
+		"stage": 0, # stage
+		"reading": {
+			"score": random.random() + 1, # theta
+			"answered": [], # questions answered
+			"correct": [] # questions correct
+		},
+		"listening": {
+			"score": random.random() + 1,
+			"answered": [],
+			"correct": []
+		},
+		"recording": {
+			"level": "",
+			"prompt": 0,
+			"response": ""
+		},
+		"writing": {
+			"level": "",
+			"prompt": 0,
+			"response": ""
+		}
+	} for id in _student_ids} | _get_student_data()).items() # this creates defaults for the student data and writes the current student data over it
+	if int(k) in _student_ids
+}
