@@ -107,7 +107,7 @@ def _() -> dict:
 def _() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
-@_data_function("student_ids", "Generates student_ids.json, a file containing dummy student IDs which are supposed to emulate IDs of real students taking the test.")
+@_data_function("ids", "Generates student_ids.json, a file containing dummy student IDs which are supposed to emulate IDs of real students taking the test.")
 def _() -> list:
 	return [str(100_000_000 + i) for i in range(100)]
 
