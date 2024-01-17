@@ -6,23 +6,7 @@ from abc import abstractmethod
 from typing import Self
 
 class Session:
-	_data: dict[str]
-
-	def __init__(self, data: dict[str]):
-		self._data = data
-		
-
-	@abstractmethod
-	def advance() -> bool:
-		...
-
-	@abstractmethod
-	def next_session() -> Self:
-		...
-	
-	@abstractmethod
-	def render() -> str:
-		...
+	...
 
 class SessionID(str): ...
 
