@@ -1,11 +1,25 @@
 # script for generating dummy questions for testing. 
-# usage: python generate.py
+# usage: python dummy.py
 
 import sys, json, random
+from typing import Callable
+
+_func_dict: dict[str: dict[str: any]] = {}
+
+# decorator for generation functions
+def _data_function(name: str, desc: str = None):
+	desc = f'Generates {name}.json.' if desc is None else desc
+	def wrapper(func: Callable[[], list | dict]):
+		_func_dict[name] = {
+			"desc": desc,
+			"func": func
+		}
+		return func
+	return wrapper
 
 # reading multiple choice questions
-def generate_rmcq() -> None:
-	print("generating rmcq.json...")
+@_data_function("rmcq", "Generates rmcq.json, a file containing dummy reading multiple choice questions.")
+def _() -> list:
 	questions = []
 
 	# generate 30 single reading questions
@@ -29,7 +43,7 @@ def generate_rmcq() -> None:
 			"type": "reading",
 			"text": f"reading Q{i + 1} difficulty={difficulty} multi question text",
 			"difficulty": difficulty,
-			"questions": [
+			"question_data": [
 				{
 					"question": f"reading Q{i + 1}.{j + 1} question",
 					"options": ["a", "b", "c"],
@@ -42,12 +56,11 @@ def generate_rmcq() -> None:
 	# not really necessary 
 	# random.shuffle(questions)
 
-	with open("data/rmcq.json", "w") as file:
-		json.dump(questions, file)
+	return questions
 
 # listening multiple choice questions
-def generate_lmcq() -> None:
-	print("generating lmcq.json...")
+@_data_function("lmcq", "Generates lmcq.json, a file containing dummy listening multiple choice questions.")
+def _() -> list:
 	questions = []
 
 	# generate 30 single listening questions
@@ -73,7 +86,7 @@ def generate_lmcq() -> None:
 			"type": "listening",
 			"audio": f"audio{audio_num}.wav",
 			"difficulty": difficulty,
-			"questions": [
+			"question_data": [
 				{
 					"question": f"listening Q{i + 1}.{j + 1} difficulty={difficulty} audio={audio_num} multi question",
 					"options": ["a", "b", "c"],
@@ -82,38 +95,40 @@ def generate_lmcq() -> None:
 			]
 		})
 	
-	with open("data/lmcq.json", "w") as file:
-		json.dump(questions, file)
+	return questions
 
 # writing prompts
-def generate_wfrq() -> None:
-	print("generating wfrq.json...")
-	with open("data/wfrq.json", "w") as file:
-		json.dump({str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
+@_data_function("wfrq", "Generates wfrq.json, a file containing dummy writing free response questions.")
+def _() -> dict:
+	return {str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
 # speaking prompts
-def generate_sfrq() -> None:
-	print("generating sfrq.json...")
-	with open("data/sfrq.json", "w") as file:
-		json.dump({str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
+@_data_function("sfrq", "Generates sfrq.json, a file containing dummy speaking free response questions.")
+def _() -> dict:
+	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
+
+def _gen(key: str) -> None:
+	with open(f"data/{key}.json", "w") as file:
+		print(f"Generating {key}.json...")
+		json.dump(_func_dict[key]["func"](), file)
+
+def _print_help() -> None:
+	print("Generator for dummy data for this project.")
+	print(f"Usage: python dummy.py (OPTION)\n\nOptions:")
+	print("\n".join([f"  {k} - {v["desc"]}" for k, v in _func_dict.items()]))
+	print("  help - Prints this help page.")
+	print("  all - Generates all files. Refer to above.")
 
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
-		print(f"Invalid number of parameters. (1 required, {len(sys.argv) - 1} found)")
+	special = ["all", "help"]
+
+	if len(sys.argv) != 2 or sys.argv[1] not in _func_dict and sys.argv[1] not in special:
+		_print_help()
 		sys.exit(1)
-	elif "rmcq" in sys.argv:
-		generate_rmcq()
-	elif "lmcq" in sys.argv:
-		generate_lmcq()
-	elif "wfrq" in sys.argv:
-		generate_wfrq()
-	elif "sfrq" in sys.argv:
-		generate_sfrq()
-	elif "all" in sys.argv:
-		generate_rmcq()
-		generate_lmcq()
-		generate_wfrq()
-		generate_sfrq()
+	elif sys.argv[1] == "help":
+		_print_help()
+	elif sys.argv[1] == "all":
+		for key in _func_dict:
+			_gen(key)
 	else:
-		print(f"Second argument must be 'lmcq', 'rmcq', 'wfrq', 'sfrq', or 'all'. ({sys.argv[1]} found)")
-		sys.exit(1)
+		_gen(sys.argv[1])
