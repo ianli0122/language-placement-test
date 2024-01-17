@@ -107,23 +107,16 @@ def _gen_wfrq() -> dict:
 def _gen_sfrq() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
+def print_help() -> None:
+	print("Generator for dummy data for this project.")
+	print(f"Usage: python dummy.py (OPTION)\n\nOptions:")
+	print("\n".join([f"  {k} - {v["desc"]}" for k, v in _func_dict.items()]))
+	print("  help - Prints this help page.")
+
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
-		print(f"Invalid number of parameters. (1 required, {len(sys.argv) - 1} found)")
+	if len(sys.argv) != 2 or sys.argv[1] not in _func_dict and sys.argv[1] != "help":
+		print_help()
 		sys.exit(1)
-	elif "rmcq" in sys.argv:
-		generate_rmcq()
-	elif "lmcq" in sys.argv:
-		generate_lmcq()
-	elif "wfrq" in sys.argv:
-		generate_wfrq()
-	elif "sfrq" in sys.argv:
-		generate_sfrq()
-	elif "all" in sys.argv:
-		generate_rmcq()
-		generate_lmcq()
-		generate_wfrq()
-		generate_sfrq()
-	else:
-		print(f"Second argument must be 'lmcq', 'rmcq', 'wfrq', 'sfrq', or 'all'. ({sys.argv[1]} found)")
-		sys.exit(1)
+	elif sys.argv[1] == "help":
+		print_help()
+		sys.exit(0)
