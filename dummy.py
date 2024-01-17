@@ -19,7 +19,7 @@ def _data_function(name: str, desc: str = None):
 
 # reading multiple choice questions
 @_data_function("rmcq", "Generates rmcq.json, a file containing dummy reading multiple choice questions.")
-def _gen_rmcq() -> list:
+def _() -> list:
 	questions = []
 
 	# generate 30 single reading questions
@@ -60,7 +60,7 @@ def _gen_rmcq() -> list:
 
 # listening multiple choice questions
 @_data_function("lmcq", "Generates lmcq.json, a file containing dummy listening multiple choice questions.")
-def _gen_lmcq() -> list:
+def _() -> list:
 	questions = []
 
 	# generate 30 single listening questions
@@ -99,12 +99,12 @@ def _gen_lmcq() -> list:
 
 # writing prompts
 @_data_function("wfrq", "Generates wfrq.json, a file containing dummy writing free response questions.")
-def _gen_wfrq() -> dict:
+def _() -> dict:
 	return {str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
 # speaking prompts
 @_data_function("sfrq", "Generates sfrq.json, a file containing dummy speaking free response questions.")
-def _gen_sfrq() -> dict:
+def _() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
 def _gen(key: str) -> None:
