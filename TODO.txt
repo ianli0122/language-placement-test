@@ -1,8 +1,6 @@
 - Time out user sessions
     - change internal variable "id" to "session"
     - make user sessions save when they answer a question
-- Password integration
-
 - we can change the system to be more password-friendly by creating some new files
     - students.json will be the only allowed ids for login
     - student_data.json can be for storing student data (theta, whether they have taken the test, etc)
@@ -13,13 +11,13 @@
         - this will be thought out more later
     - for login, we have the user input their id and password
         - we can also make something that exports a csv file of ids and passwords
-
 - Add admin view
     - add student data export feature (as csv)
     - add student passwords export feature (as csv)
-
-- Website hosting
 - Testing bank
     - Implement testing bank
     - Test bank calibration
 - Nicer UI (maybe animations?)
+
+Bug Fixes:
+- question range over the /25 (question selection)
