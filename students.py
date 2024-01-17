@@ -48,3 +48,10 @@ _student_data: dict[str: dict[str: any]] = {k: v
 	} for id in _student_ids} | _get_student_data()).items() # this creates defaults for the student data and writes the current student data over it
 	if k in _student_ids
 }
+
+def get_student_data(id: str) -> dict[str: any]:
+	return _student_data[id]
+
+def save_student_data() -> None:
+	with open("student_data.json", "w") as file:
+		json.dump(_student_data, file)
