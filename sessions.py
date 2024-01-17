@@ -47,17 +47,12 @@ def _generate_session_id() -> SessionID:
 # gets a new session, returns the SessionID (wrapper for a string) and a Session
 # we return SessionID instead of str so we dont get id and session id mixed up
 # if the session id is None, that means either the session is open or they are already finished
-def open_session(id: str) -> (SessionID, Session):
-	if is_session_open(id):
-		return None, None
-	
+def open_session(id: str) -> (SessionID, Session):	
 	data = students.get_student_data(id)
-	
-	if data["stage"] == 4:
+	if not(data["in-session"]) or data["stage"] == 4:
 		return None, None
 	
 	session_id = _generate_session_id()
-
 	match data: # TODO create appropiate constructors
 		case 0:
 			return session_id, _ReadingSession()
