@@ -2,13 +2,14 @@
 # usage: python generate.py
 
 import sys, json, random
+from typing import Callable
 
 _func_dict = {}
 
 # decorator for generation functions
 def _data_function(name: str, desc: str = None):
 	desc = f'Generates {name}.json.' if desc is None else desc
-	def wrapper(func: callable[[], list | dict]):
+	def wrapper(func: Callable[[], list | dict]):
 		_func_dict[name] = {
 			"desc": desc,
 			"func": func
@@ -17,8 +18,8 @@ def _data_function(name: str, desc: str = None):
 	return wrapper
 
 # reading multiple choice questions
-def generate_rmcq() -> None:
-	print("generating rmcq.json...")
+@_data_function("rmcq")
+def _gen_rmcq() -> list:
 	questions = []
 
 	# generate 30 single reading questions
@@ -55,12 +56,11 @@ def generate_rmcq() -> None:
 	# not really necessary 
 	# random.shuffle(questions)
 
-	with open("data/rmcq.json", "w") as file:
-		json.dump(questions, file)
+	return questions
 
 # listening multiple choice questions
-def generate_lmcq() -> None:
-	print("generating lmcq.json...")
+@_data_function("lmcq")
+def _gen_lmcq() -> list:
 	questions = []
 
 	# generate 30 single listening questions
@@ -95,20 +95,17 @@ def generate_lmcq() -> None:
 			]
 		})
 	
-	with open("data/lmcq.json", "w") as file:
-		json.dump(questions, file)
+	return questions
 
 # writing prompts
-def generate_wfrq() -> None:
-	print("generating wfrq.json...")
-	with open("data/wfrq.json", "w") as file:
-		json.dump({str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
+@_data_function("wfrq")
+def _gen_wfrq() -> dict:
+	return {str(i): [f"writing prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
 # speaking prompts
-def generate_sfrq() -> None:
-	print("generating sfrq.json...")
-	with open("data/sfrq.json", "w") as file:
-		json.dump({str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}, file)
+@_data_function("sfrq")
+def _gen_sfrq() -> dict:
+	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
 if __name__ == "__main__":
 	if len(sys.argv) != 2:
