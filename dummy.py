@@ -99,6 +99,10 @@ if __name__ == "__main__":
 		generate_lmcq()
 	elif "frq" in sys.argv:
 		generate_frq()
+	elif "all" in sys.argv:
+		generate_rmcq()
+		generate_lmcq()
+		generate_frq()
 	else:
-		print(f"Second argument must be 'lmcq', 'rmcq' or 'frq'. ({sys.argv[1]} found)")
+		print(f"Second argument must be 'lmcq', 'rmcq', 'frq', or 'all'. ({sys.argv[1]} found)")
 		sys.exit(1)
