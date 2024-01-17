@@ -35,17 +35,24 @@ def create_question_page():
         instances.remove_instance(id)
         return render_template('result.html')
     
-    question, options = instances.get_question_data(instance.start_answering_question())
-    return render_template('question.html', question=question, options=options, questionnumber = len(instance.questions_answered))
+    global questions
+    text, questions, options = instances.get_question_data(instance.start_answering_question()) # get question data
+    if len(questions) == 1: # set question counter (range if multiple questions)
+        questionnumber = len(instance.questions_answered)
+    else:
+        questionnumber = str(len(instance.questions_answered) - len(questions) + 1) + " - " + str(len(instance.questions_answered))
+    return render_template('question.html', text=text, questions=questions, options=options, questionnumber=questionnumber)
 
 # Route to handle form submission
 @app.route('/submit', methods=['POST'])
 def submit():
     id = request.cookies.get('id')
     instance = instances.get_instance(id)
-    user_answer = request.form.get('answer')
-    instance.answer_question(user_answer)
+    user_answer = []
+    for i in range(len(questions)): # get user response as a list
+        user_answer.append(int(request.form.get(str(i))))
+    instance.answer_question(user_answer) # check answer
     return redirect('/question')
 
 if __name__ == '__main__':
-    app.run(port=3001, host="0.0.0.0")
+    app.run(port=3001, host="0.0.0.0", debug=True)

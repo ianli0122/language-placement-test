@@ -37,12 +37,11 @@ def _() -> list:
 	for i in range(30):
 		difficulty = random.randint(1, 5)
 		questions.append({
-			"type": "reading",
 			"text": f"reading Q{i + 1} difficulty={difficulty} single question text",
 			"difficulty": difficulty,
 			"question_data": {
 				"question": f"reading Q{i + 1} question",
-				"options": ["a", "b", "c"],
+				"options": ["a", "b", "c", "d"],
 				"correct": 0 # correct answer will always be "a"
 			}
 		})
@@ -51,13 +50,12 @@ def _() -> list:
 	for i in range(20):
 		difficulty = random.randint(1, 5)
 		questions.append({
-			"type": "reading",
 			"text": f"reading Q{i + 1} difficulty={difficulty} multi question text",
 			"difficulty": difficulty,
 			"question_data": [
 				{
 					"question": f"reading Q{i + 1}.{j + 1} question",
-					"options": ["a", "b", "c"],
+					"options": ["a", "b", "c", "d"],
 					"correct": 0 # correct answer is always a
 				} for j in range(random.randint(3, 6)) # generates a random number of additional questions for each mutli question
 			]

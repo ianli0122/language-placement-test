@@ -11,11 +11,28 @@
         <h1>Mandarin Placement Quiz</h1>
     </div>
     <div class="questioncounter">
-        <h3>{{ questionnumber }} / 20</h3>
+        <h3>{{ questionnumber }} / 25</h3>
     </div>
     <br>
     <form action="{{ url_for('submit') }}" method="post">
-        <p>{{ question }}</p>
+        <p>{{ text }}</p><br><br>
+        {% for question in questions %}
+            <div class="question">
+                <p>{{ question }}</p>
+                {% set group_name = loop.index0 %}
+                {% for option in options[loop.index0] %}
+                    {% set index = loop.index0 %}
+                    <label>
+                        <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }} {{ index }}
+                    </label><br>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <!-- <form action="{{ url_for('submit') }}" method="post">
+        <p>{{ questions }}</p>
         {% for option in options %}
             <label>
                 <input type="radio" name="answer" value="{{ option }}" required> {{ option }}
@@ -23,6 +40,6 @@
         {% endfor %}
         <br>
         <button type="submit">Next</button>
-    </form>
+    </form> -->
 </body>
 </html>

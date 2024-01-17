@@ -1,4 +1,5 @@
 *.json
 *.csv
 .env
+.mp4
 __pycache__
