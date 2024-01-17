@@ -43,7 +43,7 @@ def _() -> list:
 			"type": "reading",
 			"text": f"reading Q{i + 1} difficulty={difficulty} multi question text",
 			"difficulty": difficulty,
-			"questions": [
+			"question_data": [
 				{
 					"question": f"reading Q{i + 1}.{j + 1} question",
 					"options": ["a", "b", "c"],
@@ -86,7 +86,7 @@ def _() -> list:
 			"type": "listening",
 			"audio": f"audio{audio_num}.wav",
 			"difficulty": difficulty,
-			"questions": [
+			"question_data": [
 				{
 					"question": f"listening Q{i + 1}.{j + 1} difficulty={difficulty} audio={audio_num} multi question",
 					"options": ["a", "b", "c"],
