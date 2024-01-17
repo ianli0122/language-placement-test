@@ -107,16 +107,23 @@ def _gen_wfrq() -> dict:
 def _gen_sfrq() -> dict:
 	return {str(i): [f"speaking prompt {j + 1} difficulty={i}" for j in range(3)] for i in range(1, 6)}
 
-def print_help() -> None:
+def _print_help() -> None:
 	print("Generator for dummy data for this project.")
 	print(f"Usage: python dummy.py (OPTION)\n\nOptions:")
 	print("\n".join([f"  {k} - {v["desc"]}" for k, v in _func_dict.items()]))
 	print("  help - Prints this help page.")
+	print("  all - Generates all files. Refer to above.")
 
 if __name__ == "__main__":
-	if len(sys.argv) != 2 or sys.argv[1] not in _func_dict and sys.argv[1] != "help":
-		print_help()
+	special = ["all", "help"]
+
+	if len(sys.argv) != 2 or sys.argv[1] not in _func_dict and sys.argv[1] not in special:
+		_print_help()
 		sys.exit(1)
 	elif sys.argv[1] == "help":
-		print_help()
+		_print_help()
 		sys.exit(0)
+	elif sys.argv[1] == "all":
+		# TODO
+		sys.exit(0)
+	
