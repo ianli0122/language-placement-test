@@ -12,10 +12,17 @@
         - these "subdicts" can store theta, questions, question responses (correct or not), whether or not they have completed the test, etc
     - we will then need to probably update instances.py, and/or make a new python file to easily manage sessions and students
         - this will be thought out more later
+    - for login, we have the user input their id and password
+        - password is obtained through taking the id, adding "SALT" .env variable
+        - "SALT" is just some random string, anything works
+        - we then concat str(id) and the salt, then hash, then feed that hash into something that can create a good unique password
+        - we can figure out a password from there
+        - we can also make something that exports a csv file of ids and passwords
 
 - Add admin view
-    - Dotenv for private variables
+    - admin password can be stored in .env file ("ADMIN_PASSWORD")
     - make admin view export csv file instead of writing to it in program, so we can change the internal data file to json
+
 - Website hosting
 - Testing bank
     - Implement testing bank
