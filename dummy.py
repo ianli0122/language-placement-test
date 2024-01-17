@@ -9,7 +9,7 @@ def generate_mcq() -> None:
 	# generate 30 single-reading questions
 	for i in range(30):
 		difficulty = random.randint(1, 5)
-		questions.add({
+		questions.append({
 			"type": "single-reading",
 			"text": f"Q{i + 1} text",
 			"difficulty": difficulty,
@@ -21,7 +21,7 @@ def generate_mcq() -> None:
 	# generate 20 multi-reading questions
 	for i in range(20):
 		difficulty = random.randint(1, 5)
-		questions.add({
+		questions.append({
 			"type": "multi-reading",
 			"text": f"multi-reading Q{i + 1} difficulty={difficulty}",
 			"difficulty": difficulty,
@@ -38,7 +38,7 @@ def generate_mcq() -> None:
 	for i in range(10):
 		difficulty = random.randint(1, 5)
 		audio_num = random.randint(1, 4)
-		questions.add({
+		questions.append({
 			"type": "single-listening",
 			"audio": f"audio{audio_num}.wav",
 			"difficulty": difficulty,
@@ -51,7 +51,7 @@ def generate_mcq() -> None:
 	for i in range(20):
 		difficulty = random.randint(1, 5)
 		audio_num = random.randint(1, 4)
-		questions.add({
+		questions.append({
 			"type": "multi-listening",
 			"audio": f"audio{audio_num}.wav",
 			"text": f"multi-reading Q{i + 1} difficulty={difficulty}",
@@ -64,8 +64,9 @@ def generate_mcq() -> None:
 			]
 		})
 
-	# shuffle array so that we can test 
-	random.shuffle(questions)
+	# shuffle array so that we can test
+	# not really necessary 
+	# random.shuffle(questions)
 
 	with open("mcq.json", "w") as file:
 		json.dump(questions, file)
