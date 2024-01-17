@@ -48,7 +48,7 @@ def _generate_session_id() -> SessionID:
 # if the session id is None, that means either the session is open or they are already finished
 def open_session(id: str) -> (SessionID, Session):	
 	data = students.get_student_data(id)
-	if not(data["in-session"]) or data["stage"] == 4:
+	if data["in-session"] or data["stage"] == 4:
 		return None, None 
 	
 	session_id = _generate_session_id()
