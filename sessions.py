@@ -22,19 +22,22 @@ class Session:
 
 class SessionID(str): ...
 
-class _ReadingSession(Session):
+class _Session:
+	...
+
+class _ReadingSession(_Session):
 	_data_dict: dict[str: any]
 
 	def __init__(self):
 		...	
 
-class _ListeningSession(Session):
+class _ListeningSession(_Session):
 	...
 
-class _SpeakingSession(Session):
+class _SpeakingSession(_Session):
 	...
 
-class _WritingSession(Session):
+class _WritingSession(_Session):
 	...
 
 def is_session_open(id: str) -> bool: # NOTE do we still need this?
@@ -46,6 +49,7 @@ def _generate_session_id() -> SessionID:
 # gets a new session, returns the SessionID (wrapper for a string) and a Session
 # we return SessionID instead of str so we dont get id and session id mixed up
 # if the session id is None, that means either the session is open or they are already finished
+# TODO fix this so it sends a correct instance and stuff
 def open_session(id: str) -> (SessionID, Session):	
 	data = students.get_student_data(id)
 	if data["in-session"] or data["stage"] == 4:
