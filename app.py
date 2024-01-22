@@ -28,8 +28,15 @@ def instructions():
         return redirect('/')
     
     sections = {0: ["Reading Multiple-Choice", "instructions go here"], 1: ["Listening Multiple-Choice", "instructions"], 2: ["Speaking Free-Response", "instructions"], 3: ["Writing Free-Response", "instructions"]}
+
     session = get_session()
-    return render_template('instruction.html', section_name=sections[session.section][0], instructions=sections[session.section][1]) # instructions page based on section
+    if session.section < 4:
+        return render_template('instruction.html', section_name=sections[session.section][0], instructions=sections[session.section][1]) # instructions page based on section
+    else:
+        session.export_data()
+        sessions.remove_session(request.cookies.get('id'))
+        return render_template('result.html')
+        
 
 @app.route('/continue_test', methods=['POST'])
 def continue_test(): # redirect to correct page
@@ -42,8 +49,6 @@ def continue_test(): # redirect to correct page
             return redirect("/frq-question")
         case 3:
             return redirect("/frq-question")
-        case 4:
-            return render_template('result.html')
 
 # this function will return question page
 @app.route('/mcq-question', methods=['GET'])
@@ -71,10 +76,10 @@ def create_mcq_question_page():
     else: questionnumber = str(len(session.questions_answered) - len(questions) + 1) + " - " + str(len(session.questions_answered))
     match session.section:
         case 0: 
-            return render_template('reading-question.html', prompt=prompt, questions=questions, options=options, questionnumber=questionnumber)
+            return render_template('reading.html', prompt=prompt, questions=questions, options=options, questionnumber=questionnumber)
         case 1:
             print(prompt)
-            return render_template('listening-question.html', audio=prompt, questions=questions, options=options, questionnumber=questionnumber)
+            return render_template('listening.html', audio=prompt, questions=questions, options=options, questionnumber=questionnumber)
 
 # Route to handle form submission
 @app.route('/submit_mcq', methods=['POST'])
@@ -104,9 +109,10 @@ def create_frq_question_page():
     match session.section:
         case 2:
             session = session.speaking
+            return render_template('speaking.html', prompt=session.select_prompt())
         case 3:
             session = session.writing
-    return render_template('frq-question.html', prompt=session.select_prompt())
+            return render_template('writing.html', prompt=session.select_prompt())
 
 @app.route('/submit-frq', methods=['POST'])
 def submit_frq():

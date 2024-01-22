@@ -14,14 +14,23 @@ class Session:
 
 	def __init__(self, student_id: int):
 		self.student_id = student_id
-		self.student_data = []
-		self.section = 0
+		self.student_data = [1,1,"ddd","ddd"]
+		self.section = 4
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
 
 	def initialize_frq(self) -> None:
 		self.speaking = frq.FRQ(self.student_data[1], 2)
 		self.writing = frq.FRQ(self.student_data[0], 3)
+
+	def export_data(self) -> None:
+		data = {
+				"reading": self.student_data[0],
+				"listening": self.student_data[1],
+				"speaking": self.student_data[2],
+				"writing": self.student_data[3]
+		}
+		json.dump({**json.load(open('data/student_data.json')), str(self.student_id): data}, open('data/student_data.json', 'w'), indent=2)
 		
 
 _sessions: dict[str: Session] = {}
