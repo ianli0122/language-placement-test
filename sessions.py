@@ -17,6 +17,30 @@ _wfrqs: dict[str: list[str]] = _get_file("data/wfrq.json")
 
 # session classes
 
+"""
+my vision for sessions.py
+
+in app.py, i want to be able to call
+
+session_id, session = open_session(id)
+set_cookie('session_id', session_id)
+session.render()
+
+---- in a different area ----
+session = get_session(session_id)
+session.advance(answer) # this will advance the session to the next question with the supplied answer
+session.render()
+
+and expect everything to be handled
+
+Session will be a wrapper for _Session, which will be a base class for each type of problem.
+in the Session internal stuff, i want to be able to call something akin to:
+advanced = _session.advance()
+if not advanced: # indicates that it is at the end
+	_session = _session.next()
+
+"""
+
 class Session:
 	...
 
