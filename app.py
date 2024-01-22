@@ -69,7 +69,6 @@ def create_mcq_question_page():
         get_session().student_data.append(session.theta)
         return redirect('/instruction')
     
-    global questions
     prompt, questions, options = session.get_question() # get question data
     # set question counter (range if multiple questions)
     if len(questions) == 1: questionnumber = len(session.questions_answered)
@@ -95,8 +94,12 @@ def submit_mcq():
             session = session.listening
 
     user_answer = []
-    for i in range(len(questions)): # get user response as a list
-        user_answer.append(int(request.form.get(str(i))))
+    try:
+        for i in range(10): # get user response as a list
+            user_answer.append(int(request.form.get(str(i))))
+    except TypeError:
+        pass
+    print(user_answer)
     session.answer_question(user_answer) # check answer
     return redirect('/mcq-question')
 
