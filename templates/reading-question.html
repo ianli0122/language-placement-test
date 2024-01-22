@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
         <title>Mandarin Placement Quiz</title>
     </head>
     <body>
@@ -11,10 +11,10 @@
             <h1>Mandarin Placement Quiz</h1>
         </div>
         <div class="questioncounter">
-            <h3>{{ questionnumber }} / 25</h3>
+            <h3>{{ questionnumber }}</h3>
         </div>
         <br>
-        <form action="{{ url_for('submit') }}" method="post">
+        <form action="{{ url_for('submit_mcq') }}" method="post">
             <p>{{ prompt }}</p><br><br>
             {% for question in questions %}
                 <div class="question">
@@ -23,7 +23,7 @@
                     {% for option in options[loop.index0] %}
                         {% set index = loop.index0 %}
                         <label>
-                            <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }} {{ index }}
+                            <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }}
                         </label><br>
                     {% endfor %}
                 </div>

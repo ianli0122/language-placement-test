@@ -16,13 +16,13 @@ class MCQ:
     questions_answered: list[int]
     responses: list[bool]
     question_answers: list[int]
-    mode: int # 0 is reading, 1 is listening
+    section: int # 0 is reading, 1 is listening
 
-    def __init__(self, mode: int):
+    def __init__(self, section: int):
         self.theta = random() + 1 # generate float between 1-2
         self.questions_answered = []
         self.responses = []
-        self.mode = mode
+        self.section = section
         # initialize question bank variables
         question_vars("rmcq")
         question_vars("lmcq")
@@ -32,16 +32,16 @@ class MCQ:
         questions, selections = [], []
         for i in index:
             self.questions_answered.append(i)
-            questions.append(_questions[self.mode][i][1])
-            selections.append(_questions[self.mode][i][3])
-        return _questions[self.mode][index[0]][0], questions, selections
+            questions.append(_questions[self.section][i][1])
+            selections.append(_questions[self.section][i][3])
+        return _questions[self.section][index[0]][0], questions, selections
     
     def answer_question(self, answer: list[int]):
         for i in range(len(answer)): self.responses.append(answer[i] == self.question_answers[i]) # append bools to responses
         self.theta = calc_new_theta(self) # calculate new theta
 
     def check_stop(self) -> bool: # returns a bool whether to stop or not
-        questions_answered_np = np.array([arr for i, arr in enumerate(_questions_np[self.mode]) if i in self.questions_answered])
+        questions_answered_np = np.array([arr for i, arr in enumerate(_questions_np[self.section]) if i in self.questions_answered])
         try:
             return _item_stopper.stop(None, questions_answered_np) or len(self.questions_answered) > 5 and _error_stopper.stop(None, questions_answered_np, self.theta)
         except ValueError:
@@ -53,7 +53,7 @@ _questions: list[list[str, str, int, list[str], int]] = [] # list[prompt: str, q
 _connected_questions: list[list[list[int]]] = [] # list[list[int]] connected questions
 _questions_np: list[any] = []
 def question_vars(file: str) -> None:
-    with open(f"data/{file}.json", encoding="utf8") as questionFile:
+    with open(f"data/{file}.json", 'r', encoding="utf8") as questionFile:
         questions: list[str, str, int, list[str], int]= []
         connected_questions: list[list[int]] = []
         for i in json.load(questionFile):
@@ -71,15 +71,15 @@ def question_vars(file: str) -> None:
 
 
 def select_question(mcq: MCQ) -> (list[int], list[int]): # select question based on theta, return list of question indexes and answers
-	question_number = _selector.select(None, _questions_np[mcq.mode], mcq.questions_answered, mcq.theta) # algorithm selects question index
-	for i in _connected_questions[mcq.mode]:
+	question_number = _selector.select(None, _questions_np[mcq.section], mcq.questions_answered, mcq.theta) # algorithm selects question index
+	for i in _connected_questions[mcq.section]:
 		if question_number in i: # check if index in _connected_questions
 			indexes = i 
 			answer = []
 			for q in i:
-				answer.append(_questions[mcq.mode][q][4])
+				answer.append(_questions[mcq.section][q][4])
 			return indexes, answer # return list of indexes, answers
-	return [question_number], [_questions[mcq.mode][question_number][4]] # else, return a single index and answer
+	return [question_number], [_questions[mcq.section][question_number][4]] # else, return a single index and answer
 
 def calc_new_theta(mcq: MCQ): # calculate new theta
-    return _estimater.estimate(None, _questions_np[mcq.mode], mcq.questions_answered, mcq.responses, mcq.theta)
+    return _estimater.estimate(None, _questions_np[mcq.section], mcq.questions_answered, mcq.responses, mcq.theta)

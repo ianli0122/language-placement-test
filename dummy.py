@@ -64,13 +64,11 @@ def _() -> list:
 	# generate 30 single listening questions
 	for i in range(30):
 		difficulty = random.randint(1, 5)
-		audio_num = random.randint(1, 4)
 		questions.append({
-			"type": "listening",
-			"audio": f"audio{audio_num}.wav",
+			"prompt": "Always Now.mp3",
 			"difficulty": difficulty,
 			"question_data": {
-				"question": f"listening Q{i + 1} difficulty={difficulty} audio={audio_num} single question",
+				"question": f"listening Q{i + 1} difficulty={difficulty} audio=Always Now.mp3 single question",
 				"options": ["a", "b", "c"],
 				"correct": 0 # correct answer will always be "a"
 			}
@@ -79,14 +77,12 @@ def _() -> list:
 	# generate 20 multi listening questions
 	for i in range(20):
 		difficulty = random.randint(1, 5)
-		audio_num = random.randint(1, 4)
 		questions.append({
-			"type": "listening",
-			"audio": f"audio{audio_num}.wav",
+			"prompt": "Always Now.mp3",
 			"difficulty": difficulty,
 			"question_data": [
 				{
-					"question": f"listening Q{i + 1}.{j + 1} difficulty={difficulty} audio={audio_num} multi question",
+					"question": f"listening Q{i + 1}.{j + 1} difficulty={difficulty} audio=Always Now.mp3 multi question",
 					"options": ["a", "b", "c"],
 					"correct": 0 # correct answer will always be "a"
 				} for j in range(random.randint(3, 6)) # generates a random number of additional questions for each mutli question

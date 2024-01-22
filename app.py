@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, make_response
 import sessions
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='')
 
 def get_session() -> sessions: # return specific session
     return sessions.get_session(request.cookies.get('id'))
@@ -34,15 +34,20 @@ def instructions():
 @app.route('/continue_test', methods=['POST'])
 def continue_test(): # redirect to correct page
     session = get_session()
-    print(session.section)
     match session.section:
         case 0 | 1:
             return redirect("/mcq-question")
+        case 2:
+            session.initialize_frq() # initialize frqs based on previous thetas
+            return redirect("/frq-question")
+        case 3:
+            return redirect("/frq-question")
+        case 4:
+            return render_template('result.html')
 
 # this function will return question page
 @app.route('/mcq-question', methods=['GET'])
 def create_mcq_question_page():
-    id = request.cookies.get('id') # gets the id (stored as a cookie)
     if not(has_session()): # redirects to home if session not found
         return redirect('/')
     
@@ -64,11 +69,16 @@ def create_mcq_question_page():
     # set question counter (range if multiple questions)
     if len(questions) == 1: questionnumber = len(session.questions_answered)
     else: questionnumber = str(len(session.questions_answered) - len(questions) + 1) + " - " + str(len(session.questions_answered))
-    return render_template('mcq-question.html', prompt=prompt, questions=questions, options=options, questionnumber=questionnumber)
+    match session.section:
+        case 0: 
+            return render_template('reading-question.html', prompt=prompt, questions=questions, options=options, questionnumber=questionnumber)
+        case 1:
+            print(prompt)
+            return render_template('listening-question.html', audio=prompt, questions=questions, options=options, questionnumber=questionnumber)
 
 # Route to handle form submission
-@app.route('/submit', methods=['POST'])
-def submit():
+@app.route('/submit_mcq', methods=['POST'])
+def submit_mcq():
     if not(has_session()):
         return redirect('/')
     
@@ -84,6 +94,26 @@ def submit():
         user_answer.append(int(request.form.get(str(i))))
     session.answer_question(user_answer) # check answer
     return redirect('/mcq-question')
+
+@app.route('/frq-question', methods=['GET'])
+def create_frq_question_page():
+    if not(has_session()): # redirects to home if session not found
+        return redirect('/')
+    
+    session = get_session()
+    match session.section:
+        case 2:
+            session = session.speaking
+        case 3:
+            session = session.writing
+    return render_template('frq-question.html', prompt=session.select_prompt())
+
+@app.route('/submit-frq', methods=['POST'])
+def submit_frq():
+    session = get_session()
+    session.section += 1
+    session.student_data.append(request.form.get("frq"))
+    return redirect('/instruction')
 
 if __name__ == '__main__':
     app.run(port=3001, host="0.0.0.0", debug=True)

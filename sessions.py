@@ -1,13 +1,16 @@
 from random import randint
-import mcq
+import mcq, frq
 import json
 
 class Session:
 	student_id: int
 	student_data: list
 	section: int # 0: reading, 1: listening, 2: speaking, 3: writing
+
 	reading: mcq
 	listening: mcq
+	speaking: frq
+	writing: frq
 
 	def __init__(self, student_id: int):
 		self.student_id = student_id
@@ -15,6 +18,10 @@ class Session:
 		self.section = 0
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
+
+	def initialize_frq(self) -> None:
+		self.speaking = frq.FRQ(self.student_data[1], 2)
+		self.writing = frq.FRQ(self.student_data[0], 3)
 		
 
 _sessions: dict[str: Session] = {}

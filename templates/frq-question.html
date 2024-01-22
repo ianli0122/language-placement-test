@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
+        <style>
+            .frq input[type="text"]{
+                width: 600px;
+                height: 700px;
+                text-align: left;
+            }
+        </style>
+        <title>Mandarin Placement Quiz</title>
+    </head>
+    <body>
+        <div class="topbar">
+            <h1>Mandarin Placement Quiz</h1>
+        </div>
+        <br>
+        <form action="{{ url_for('submit_frq' )}}" method="post">
+            <p>{{ prompt }}</p>
+            <br>
+            <div class="frq">
+                <input type="text" name="frq">
+            </div>
+        </form>
+    </body>
+</html>
