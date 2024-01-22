@@ -14,12 +14,13 @@ class Session:
 
 	def __init__(self, student_id: int):
 		self.student_id = student_id
-		self.student_data = [1,1,"ddd","ddd"]
-		self.section = 4
+		self.student_data = []
+		self.section = 0
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
 
 	def initialize_frq(self) -> None:
+		print(self.student_data)
 		self.speaking = frq.FRQ(self.student_data[1], 2)
 		self.writing = frq.FRQ(self.student_data[0], 3)
 

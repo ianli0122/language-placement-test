@@ -4,13 +4,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
-        <style>
-            .frq input[type="text"]{
-                width: 600px;
-                height: 700px;
-                text-align: left;
-            }
-        </style>
         <title>Mandarin Placement Quiz</title>
     </head>
     <body>
@@ -22,9 +15,6 @@
             <p>{{ prompt }}</p>
             <p>just for testing, recording implementation is gonna take forever</p>
             <br>
-            <div class="frq">
-                <input type="text" name="frq">
-            </div>
             <br>
             <button type="submit">Submit</button>
         </form>
