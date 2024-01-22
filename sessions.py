@@ -4,21 +4,14 @@ import json
 
 class Session:
 	student_id: int
-	student_data: dict
+	student_data: list
 	section: int # 0: reading, 1: listening, 2: speaking, 3: writing
 	reading: mcq
 	listening: mcq
 
 	def __init__(self, student_id: int):
 		self.student_id = student_id
-		self.student_data = {
-			"section": 0,
-			"active": True,
-			"reading": None,
-			"listening": None,
-			"speaking": None,
-			"writing": None
-		}
+		self.student_data = []
 		self.section = 0
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
@@ -42,6 +35,3 @@ def get_session(id: str) -> Session:
 
 def remove_session(id: str) -> None:
 	del _sessions[id]
-
-def next_section(id: str) -> None:
-	_sessions[id].student_data["section"] += 1
