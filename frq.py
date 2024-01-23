@@ -12,7 +12,13 @@ class FRQ:
         self.section = section - 2
     
     def select_prompt(self) -> str:
-        return _questions[self.section][str(round(self.theta))]
+        score = round(self.theta)
+        if score < 1:
+            score = 1
+        elif score > 5:
+            score = 5
+
+        return _questions[self.section][str(score)]
 
 
 _questions: list[dict] = []

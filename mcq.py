@@ -8,7 +8,7 @@ import json
 # catsim variables
 _selector = MaxInfoSelector()
 _estimater = NumericalSearchEstimator()
-_item_stopper = MaxItemStopper(25)
+_item_stopper = MaxItemStopper(20)
 _error_stopper = MinErrorStopper(0.6)
 
 class MCQ:
@@ -24,8 +24,8 @@ class MCQ:
         self.responses = []
         self.section = section
         # initialize question bank variables
-        question_vars("rmcq")
-        question_vars("lmcq")
+        question_vars("live_rmcq")
+        question_vars("live_lmcq")
 
     def get_question(self) -> (str, list[str], list[list[str]]): # returns question prompt, questions, and options
         index, self.question_answers = select_question(self)
@@ -71,15 +71,15 @@ def question_vars(file: str) -> None:
 
 
 def select_question(mcq: MCQ) -> (list[int], list[int]): # select question based on theta, return list of question indexes and answers
-	question_number = _selector.select(None, _questions_np[mcq.section], mcq.questions_answered, mcq.theta) # algorithm selects question index
-	for i in _connected_questions[mcq.section]:
-		if question_number in i: # check if index in _connected_questions
-			indexes = i 
-			answer = []
-			for q in i:
-				answer.append(_questions[mcq.section][q][4])
-			return indexes, answer # return list of indexes, answers
-	return [question_number], [_questions[mcq.section][question_number][4]] # else, return a single index and answer
+    question_number = _selector.select(None, _questions_np[mcq.section], mcq.questions_answered, mcq.theta) # algorithm selects question index
+    for i in _connected_questions[mcq.section]:
+        if question_number in i: # check if index in _connected_questions
+            indexes = i 
+            answer = []
+            for q in i:
+                answer.append(_questions[mcq.section][q][4])
+            return indexes, answer # return list of indexes, answers
+    return [question_number], [_questions[mcq.section][question_number][4]] # else, return a single index and answer
 
 def calc_new_theta(mcq: MCQ): # calculate new theta
     return _estimater.estimate(None, _questions_np[mcq.section], mcq.questions_answered, mcq.responses, mcq.theta)

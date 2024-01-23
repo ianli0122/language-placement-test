@@ -27,7 +27,7 @@ def instructions():
     if not(has_session()): # redirects to home if session not found
         return redirect('/')
     
-    sections = {0: ["Reading Multiple-Choice", "instructions go here"], 1: ["Listening Multiple-Choice", "instructions"], 2: ["Speaking Free-Response", "instructions"], 3: ["Writing Free-Response", "instructions"]}
+    sections = {0: ["Reading Multiple-Choice", "Select the option that best responds to the question"], 1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to it once."], 2: ["Speaking Free-Response", "You will be given a prompt to talk about. You will have 4 minutes to prepare, 2 minutes to record. When you are finished, upload the recording here: https://drive.google.com/drive/folders/1EUs8PzMLBB2FlQbryFL8C23s5np8DnNu?usp=drive_link"], 3: ["Writing Free-Response", "You will be given a prompt to write about. You will have 15 minutes to submit"]}
 
     session = get_session()
     if session.section < 4:
@@ -77,7 +77,6 @@ def create_mcq_question_page():
         case 0: 
             return render_template('reading.html', prompt=prompt, questions=questions, options=options, questionnumber=questionnumber)
         case 1:
-            print(prompt)
             return render_template('listening.html', audio=prompt, questions=questions, options=options, questionnumber=questionnumber)
 
 # Route to handle form submission
@@ -99,7 +98,6 @@ def submit_mcq():
             user_answer.append(int(request.form.get(str(i))))
     except TypeError:
         pass
-    print(user_answer)
     session.answer_question(user_answer) # check answer
     return redirect('/mcq-question')
 
@@ -125,4 +123,4 @@ def submit_frq():
     return redirect('/instruction')
 
 if __name__ == '__main__':
-    app.run(port=3001, host="0.0.0.0", debug=True)
+    app.run(port=3001, host="0.0.0.0")

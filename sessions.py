@@ -20,7 +20,6 @@ class Session:
 		self.listening = mcq.MCQ(1)
 
 	def initialize_frq(self) -> None:
-		print(self.student_data)
 		self.speaking = frq.FRQ(self.student_data[1], 2)
 		self.writing = frq.FRQ(self.student_data[0], 3)
 
