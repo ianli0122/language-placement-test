@@ -8,11 +8,11 @@ This is still a work-in-progress project. Currently focused on the Mandarin prog
 
 - [catsim](https://pypi.org/project/catsim/) (Adaptive testing calculations)
 - [Flask](https://pypi.org/project/Flask/) (Website management)
-- [python-dotenv](https://pypi.org/project/python-dotenv/) (Authentication)
+- [NumPy](https://pypi.org/project/numpy/) (Question data management)
 
 ## To Run
 
-`flask run`
+`python app.py`
 
 ## Creators
 
