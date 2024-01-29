@@ -38,7 +38,7 @@ class Session:
 		with open(f'student_data/{self.student_id}/scores.txt', 'a', encoding="utf-8") as file:
 			for i in data:
 				file.write(i + ": " + str(data[i]) + '\n')
-		with open(f'student_data/{self.student_id}/scores_adv.json', 'a') as file:
+		with open(f'student_data/{self.student_id}/scores_adv.json', 'a') as file: # TODO remove after tests
 			json.dump(self.student_data_adv, file, indent=4)
 
 		
