@@ -1,23 +1,12 @@
-- Time out user sessions
-    - change internal variable "id" to "session"
-    - make user sessions save when they answer a question
-- we can change the system to be more password-friendly by creating some new files
-    - students.json will be the only allowed ids for login
-    - student_data.json can be for storing student data (theta, whether they have taken the test, etc)
-        - when we start the program, we will need to make sure that data for each student id exists. if not, we will have to generate some blank data for each student
-        - this can be a dict of ids to more dicts
-        - these "subdicts" can store theta, questions, question responses (correct or not), whether or not they have completed the test, etc
-    - we will then need to probably update instances.py, and/or make a new python file to easily manage sessions and students
-        - this will be thought out more later
-    - for login, we have the user input their id and password
-        - we can also make something that exports a csv file of ids and passwords
-- Add admin view
-    - add student data export feature (as csv)
-    - add student passwords export feature (as csv)
-- Testing bank
-    - Implement testing bank
-    - Test bank calibration
+- Built-in audio recording
+- Update test bank
+- Time out user sessions after a certain amount of time
 - Nicer UI (maybe animations?)
+- Bundling application
+    - Website launching
+    - Question editor
+    - In-app grading
+    - Auto-update
 
 Bug Fixes:
-- question range over the /25 (question selection)
+- check potential bug with multiple question prompts (mcq). all marked correct?
