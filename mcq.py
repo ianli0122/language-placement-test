@@ -24,8 +24,8 @@ class MCQ:
         self.responses = []
         self.section = section
         # initialize question bank variables
-        question_vars("live_rmcq")
-        question_vars("live_lmcq")
+        question_vars("rmcq")
+        question_vars("lmcq")
 
     def get_question(self) -> (str, list[str], list[list[str]]): # returns question prompt, questions, and options
         index, self.question_answers = select_question(self)
@@ -53,7 +53,7 @@ _questions: list[list[str, str, int, list[str], int]] = [] # list[prompt: str, q
 _connected_questions: list[list[list[int]]] = [] # list[list[int]] connected questions
 _questions_np: list[any] = []
 def question_vars(file: str) -> None:
-    with open(f"data/{file}.json", 'r', encoding="utf8") as questionFile:
+    with open(f"question_data/{file}.json", 'r', encoding="utf8") as questionFile:
         questions: list[str, str, int, list[str], int]= []
         connected_questions: list[list[int]] = []
         for i in json.load(questionFile):

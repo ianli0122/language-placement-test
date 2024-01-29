@@ -4,13 +4,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
-        <style>
-            textarea {
-                display: block;
-                resize: none;
-                margin: 0 auto;
-            }
-        </style>
         <title>Mandarin Placement Quiz</title>
     </head>
     <body>
@@ -18,11 +11,8 @@
             <h1>Mandarin Placement Quiz</h1>
         </div>
         <br>
-        <form action="{{ url_for('submit_frq' )}}" method="post">
-            <p>{{ prompt }}</p>
-            <br>
-            <textarea name="frq" rows="30" cols="70"></textarea>
-            <br>
+        <form action="{{ url_for('submit_writing' )}}" method="post">
+            <p>{{ prompt }}</p><br><br>
             <button type="submit">Submit</button>
         </form>
     </body>

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, make_response
+from os.path import splitext
 import sessions
 
 app = Flask(__name__, static_url_path='', static_folder='')
@@ -18,7 +19,7 @@ def home():
 @app.route('/start', methods=['POST'])
 def start():
     resp = make_response(redirect('/instruction')) # redirects users
-    id = sessions.create_session(request.form.get('student_id'))
+    id = sessions.create_session(request.form.get('student_id'), request.form.get('name'))
     resp.set_cookie('id', id) # this will create a cookie named "id" for the user, which can be get later
     return resp
 
@@ -27,7 +28,7 @@ def instructions():
     if not(has_session()): # redirects to home if session not found
         return redirect('/')
     
-    sections = {0: ["Reading Multiple-Choice", "Select the option that best responds to the question"], 1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to it once."], 2: ["Speaking Free-Response", "You will be given a prompt to talk about. You will have 4 minutes to prepare, 2 minutes to record. When you are finished, upload the recording here: https://drive.google.com/drive/folders/1EUs8PzMLBB2FlQbryFL8C23s5np8DnNu?usp=drive_link"], 3: ["Writing Free-Response", "You will be given a prompt to write about. You will have 15 minutes to submit"]}
+    sections = {0: ["Reading Multiple-Choice", "Read the question and select the option that best responds to the question."], 1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to the recording once."], 2: ["Speaking Free-Response", "You will be given a prompt to talk about in Chinese. Please use a recording software (e.g. Voice Memos) and save the recording. You will be able to upload it on the next page."], 3: ["Writing Free-Response", "You will be given a prompt to write about. Use the paper provided and answer the prompt thoroughly and thoughtfully in Chinese."]}
 
     session = get_session()
     if session.section < 4:
@@ -66,7 +67,7 @@ def create_mcq_question_page():
     # check if session needs to stop
     if session.check_stop():
         get_session().section += 1
-        get_session().student_data.append(session.theta)
+        get_session().student_data.append(float(session.theta))
         return redirect('/instruction')
     
     prompt, questions, options = session.get_question() # get question data
@@ -99,6 +100,7 @@ def submit_mcq():
     except TypeError:
         pass
     session.answer_question(user_answer) # check answer
+    get_session().student_data_adv[get_session().section].append(session.theta) # TODO remove after tests
     return redirect('/mcq-question')
 
 @app.route('/frq-question', methods=['GET'])
@@ -115,11 +117,18 @@ def create_frq_question_page():
             session = session.writing
             return render_template('writing.html', prompt=session.select_prompt())
 
-@app.route('/submit-frq', methods=['POST'])
-def submit_frq():
+@app.route('/upload-speaking', methods=['POST'])
+def upload_speaking():
+    session = get_session()
+    request.files['file'].save(f"student_data/{session.student_id}/speaking{splitext(request.files['file'].filename)[1]}")
+    session.section += 1
+    return redirect('/instruction')
+
+
+@app.route('/submit-writing', methods=['POST'])
+def submit_writing():
     session = get_session()
     session.section += 1
-    session.student_data.append(request.form.get("frq"))
     return redirect('/instruction')
 
 if __name__ == '__main__':

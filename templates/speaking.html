@@ -11,10 +11,9 @@
             <h1>Mandarin Placement Quiz</h1>
         </div>
         <br>
-        <form action="{{ url_for('submit_frq' )}}" method="post">
-            <p>{{ prompt }}</p>
-            <br>
-            <br>
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_speaking') }}">
+            <p>{{ prompt }}</p><br><br>
+            <input type="file" name="file" accept=".wav,.m4a,.mp3"><br><br><br>
             <button type="submit">Submit</button>
         </form>
     </body>

@@ -1,4 +1,5 @@
 *.json
 *.mp3
 /dummy.py
+*_data
 __pycache__
