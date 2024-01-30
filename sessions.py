@@ -8,12 +8,12 @@ class Session:
 	student_id: int
 	student_data: list
 	student_data_adv: list # TODO remove after tests
-	section: int # 0: reading, 1: listening, 2: speaking, 3: writing
+	section: int # 0: reading, 1: listening, 2: speaking, 3: writing computer, 4: writing paper
 
 	reading: mcq
 	listening: mcq
-	speaking: frq
-	writing: frq
+	free_response: frq
+	writing_prompt: int # index of typed prompt given
 
 	def __init__(self, student_id: int, name: str):
 		self.student_id = student_id
@@ -23,25 +23,22 @@ class Session:
 		self.section = 0
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
+		self.free_response = frq.FRQ()
 		os.mkdir(f"student_data/{self.student_id}")
-
-	def initialize_frq(self) -> None:
-		self.speaking = frq.FRQ(2)
-		self.writing = frq.FRQ(3)
 
 	def export_data(self) -> None:
 		data = {
 			"Name": self.name,
 			"Reading": self.student_data[0],
-			"Listening": self.student_data[1],
+			"Listening": str(self.student_data[1]) + "\n\n",
+			"Writing Prompt": json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt],
+			"Writing": self.student_data[2]
 		}
 		with open(f'student_data/{self.student_id}/scores.txt', 'a', encoding="utf-8") as file:
 			for i in data:
 				file.write(i + ": " + str(data[i]) + '\n')
 		with open(f'student_data/{self.student_id}/scores_adv.json', 'a') as file: # TODO remove after tests
 			json.dump(self.student_data_adv, file, indent=4)
-
-		
 
 _sessions: dict[str: Session] = {}
 

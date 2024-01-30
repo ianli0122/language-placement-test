@@ -4,6 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
+        <style>
+            textarea {
+                display: block;
+                resize: none;
+                margin: 0 auto;
+            }
+        </style>
         <title>Mandarin Placement Quiz</title>
     </head>
     <body>
@@ -12,7 +19,10 @@
         </div>
         <br>
         <form action="{{ url_for('submit_writing' )}}" method="post">
-            <p>{{ prompt }}</p><br><br>
+            <p>{{ prompt }}</p><br>
+            {% if textbox %}
+                <textarea name="frq" rows="30" cols="70"></textarea><br>
+            {% endif %}
             <button type="submit">Submit</button>
         </form>
     </body>

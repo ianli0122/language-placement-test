@@ -28,10 +28,16 @@ def instructions():
     if not(has_session()): # redirects to home if session not found
         return redirect('/')
     
-    sections = {0: ["Reading Multiple-Choice", "Read the question and select the option that best responds to the question."], 1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to the recording once."], 2: ["Speaking Free-Response", "You will be given a prompt to talk about in Chinese. Please use a recording software (e.g. Voice Memos) and save the recording. You will be able to upload it on the next page."], 3: ["Writing Free-Response", "You will be given a prompt to write about. Use the paper provided and answer the prompt thoroughly and thoughtfully in Chinese."]}
+    sections = {
+        0: ["Reading Multiple-Choice", "Read the question and select the option that best responds to the question."],
+        1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to the recording once."],
+        2: ["Speaking Free-Response", "You will be given a prompt to talk about in Chinese. You will have 4 minutes to prepare and 2 minutes to record. Please use a recording software (e.g. Voice Memos) and save the recording. You will be able to upload it on the next page."],
+        3: ["Writing Free-Response", "You will be given a prompt to write about. Answer the prompt in the text box thoroughly and throughtfully."],
+        4: ["Writing Free-Response", "You will be given a prompt to write about. Using the paper provided, write down the prompt and answer it thoroughly and thoughtfully in Chinese."]
+    }
 
     session = get_session()
-    if session.section < 4:
+    if session.section < 5:
         return render_template('instruction.html', section_name=sections[session.section][0], instructions=sections[session.section][1]) # instructions page based on section
     else:
         session.export_data()
@@ -45,10 +51,7 @@ def continue_test(): # redirect to correct page
     match session.section:
         case 0 | 1:
             return redirect("/mcq-question")
-        case 2:
-            session.initialize_frq() # initialize frqs based on previous thetas
-            return redirect("/frq-question")
-        case 3:
+        case 2 | 3 | 4:
             return redirect("/frq-question")
 
 # this function will return question page
@@ -111,11 +114,14 @@ def create_frq_question_page():
     session = get_session()
     match session.section:
         case 2:
-            session = session.speaking
-            return render_template('speaking.html', prompt=session.select_prompt())
+            prompt, _ = session.free_response.select_prompt(session.section)
+            return render_template('speaking.html', prompt=prompt)
         case 3:
-            session = session.writing
-            return render_template('writing.html', prompt=session.select_prompt())
+            prompt, session.writing_prompt = session.free_response.select_prompt(session.section)
+            return render_template('writing.html', prompt=prompt, textbox = True)        
+        case 4:
+            prompt, _ = session.free_response.select_prompt(session.section)
+            return render_template('writing.html', prompt=prompt, textbox = False)
 
 @app.route('/upload-speaking', methods=['POST'])
 def upload_speaking():
@@ -129,6 +135,7 @@ def upload_speaking():
 def submit_writing():
     session = get_session()
     session.section += 1
+    session.student_data.append(request.form.get('frq'))
     return redirect('/instruction')
 
 if __name__ == '__main__':

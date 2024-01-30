@@ -32,7 +32,7 @@
                   // this is used to stop the timer and start the speaking timer
                   if(prepTime <= current){
                     document.getElementById("timerTitle").innerHTML= ""
-                     document.getElementById("timer").innerHTML= "prep time is over start recording"
+                     document.getElementById("timer").innerHTML= "Prep time is over. Start recording."
                     // this is used to stop the timer so it does not keep running
                     clearInterval(timer)
                     // some stuff that stops the callback for 5 seconds
@@ -59,7 +59,7 @@
                       document.getElementById("timer").innerHTML= minutes + "m " + seconds + "s "
                       if(speakingTime <= current){
                             document.getElementById("timerTitle").innerHTML= ""
-                          document.getElementById("timer").innerHTML= "time is up end recording"
+                          document.getElementById("timer").innerHTML= "Time is up. End recording and upload."
                           clearInterval(timer)
                       }
                   }, 1000)
