@@ -19,9 +19,13 @@ def home():
 @app.route('/start', methods=['POST'])
 def start():
     resp = make_response(redirect('/instruction')) # redirects users
-    id = sessions.create_session(request.form.get('student_id'), request.form.get('name'))
-    resp.set_cookie('id', id) # this will create a cookie named "id" for the user, which can be get later
-    return resp
+    if(request.form.get('name')== "admin"):
+        print("admin call")
+        return redirect('/admin')
+    else:
+        id = sessions.create_session(request.form.get('student_id'), request.form.get('name'))
+        resp.set_cookie('id', id) # this will create a cookie named "id" for the user, which can be get later
+        return resp
 
 @app.route('/instruction', methods=['GET'])
 def instructions():
@@ -138,5 +142,8 @@ def submit_writing():
     session.student_data.append(request.form.get('frq'))
     return redirect('/instruction')
 
+@app.route('/admin', methods=['GET'])
+def create_admin_page():
+    return render_template('admin.html')
 if __name__ == '__main__':
     app.run(port=3001, host="0.0.0.0", debug=True)
