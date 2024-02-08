@@ -31,7 +31,7 @@ def instructions():
     sections = {
         0: ["Reading Multiple-Choice", "Read the question and select the option that best responds to the question."],
         1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to the recording once."],
-        2: ["Speaking Free-Response", "You will be given a prompt to talk about in Chinese. You will have 4 minutes to prepare and 2 minutes to record. Please use a recording software (e.g. Voice Memos) and save the recording. You will be able to upload it on the next page."],
+        2: ["Speaking Free-Response", "You will be given a prompt to talk about in Chinese. You will have 4 minutes to prepare and 2 minutes to record. Please use a recording software (e.g. Voice Memos, www.vocaroo.com) and save the recording. You will be able to upload it on the next page."],
         3: ["Writing Free-Response", "You will be given a prompt to write about. Answer the prompt in the text box thoroughly and throughtfully."],
         4: ["Writing Free-Response", "You will be given a prompt to write about. Using the paper provided, write down the prompt and answer it thoroughly and thoughtfully in Chinese."]
     }
@@ -71,6 +71,7 @@ def create_mcq_question_page():
     if session.check_stop():
         get_session().section += 1
         get_session().student_data.append(float(session.theta))
+        get_session().export_data()
         return redirect('/instruction')
     
     prompt, questions, options = session.get_question() # get question data
@@ -136,6 +137,7 @@ def submit_writing():
     session = get_session()
     session.section += 1
     session.student_data.append(request.form.get('frq'))
+    session.export_data()
     return redirect('/instruction')
 
 if __name__ == '__main__':

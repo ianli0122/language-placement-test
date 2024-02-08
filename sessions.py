@@ -27,17 +27,16 @@ class Session:
 		os.mkdir(f"student_data/{self.student_id}")
 
 	def export_data(self) -> None:
-		data = {
-			"Name": self.name,
-			"Reading": self.student_data[0],
-			"Listening": str(self.student_data[1]) + "\n\n",
-			"Writing Prompt": json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt],
-			"Writing": self.student_data[2]
-		}
-		with open(f'student_data/{self.student_id}/scores.txt', 'a', encoding="utf-8") as file:
+		data = {"Name": self.name}
+		if self.section >= 1: data["Reading"] = self.student_data[0]
+		if self.section >= 2: data["Listening"] = str(self.student_data[1]) + "\n\n"
+		if self.section >= 4: 
+			data["Writing Prompt"] = json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
+			data["Writing"] = self.student_data[2]
+		with open(f'student_data/{self.student_id}/scores.txt', 'w', encoding="utf-8") as file:
 			for i in data:
 				file.write(i + ": " + str(data[i]) + '\n')
-		with open(f'student_data/{self.student_id}/scores_adv.json', 'a') as file: # TODO remove after tests
+		with open(f'student_data/{self.student_id}/scores_adv.json', 'w') as file: # TODO remove after tests
 			json.dump(self.student_data_adv, file, indent=4)
 
 _sessions: dict[str: Session] = {}
