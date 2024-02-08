@@ -32,7 +32,7 @@ def instructions():
         0: ["Reading Multiple-Choice", "Read the question and select the option that best responds to the question."],
         1: ["Listening Multiple-Choice", "You will listen to a short conversation and select the option that best responds to the question. You will only be able to listen to the recording once."],
         2: ["Speaking Free-Response", "You will be given a prompt to talk about in Chinese. You will have 4 minutes to prepare and 2 minutes to record. Please use a recording software (e.g. Voice Memos, www.vocaroo.com) and save the recording. You will be able to upload it on the next page."],
-        3: ["Writing Free-Response", "You will be given a prompt to write about. Answer the prompt in the text box thoroughly and throughtfully."],
+        3: ["Writing Free-Response", "You will be given a prompt to write about. Answer the prompt in the text box thoroughly and thoughtfully."],
         4: ["Writing Free-Response", "You will be given a prompt to write about. Using the paper provided, write down the prompt and answer it thoroughly and thoughtfully in Chinese."]
     }
 
