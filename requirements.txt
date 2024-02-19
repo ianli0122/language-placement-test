@@ -1,3 +1,2 @@
 catsim
 flask
-numpy
