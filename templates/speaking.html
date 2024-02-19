@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='static/style.css') }}"
+        />
         <script src="../scripts/speaking.js"></script>
         <title>Mandarin Placement Quiz</title>
     </head>
@@ -11,12 +14,21 @@
         <div class="topbar">
             <h1>Mandarin Placement Quiz</h1>
         </div>
-        <br>
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_speaking') }}">
+        <br />
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for('upload_speaking') }}"
+        >
             <p>{{ prompt }}</p>
             <p id="timerTitle"></p>
-            <p id="timer"></p><br>
-            <input type="file" name="file" accept=".wav,.m4a,.mp3"><br><br><br>
+            <p id="timer"></p>
+            <br />
+            <input
+                type="file"
+                name="file"
+                accept=".wav,.m4a,.mp3"
+            /><br /><br /><br />
             <button type="submit">Submit</button>
         </form>
     </body>

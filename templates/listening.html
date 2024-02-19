@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='static/style.css') }}"
+        />
         <style>
             #audio-container {
                 width: 100%;
@@ -32,11 +35,14 @@
         <div class="questioncounter">
             <h3>{{ questionnumber }}</h3>
         </div>
-        <br>
+        <br />
         <form action="{{ url_for('submit_mcq') }}" method="post">
             <div id="audio-container">
                 <audio autoplay id="myAudio">
-                    <source src="{{ url_for('static', filename='question_data/audio/' + audio) }}" type="audio/mp3">
+                    <source
+                        src="{{ url_for('static', filename='question_data/audio/' + audio) }}"
+                        type="audio/mp3"
+                    />
                     Your browser does not support this audio
                 </audio>
 
@@ -44,30 +50,36 @@
                     <div class="progress"></div>
                 </div>
             </div>
-            <br>
+            <br />
             {% for question in questions %}
-                <div class="question">
-                    <p>{{ question }}</p>
-                    {% set group_name = loop.index0 %}
-                    {% for option in options[loop.index0] %}
-                        {% set index = loop.index0 %}
-                        <label>
-                            <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }}
-                        </label><br>
-                    {% endfor %}
-                </div>
+            <div class="question">
+                <p>{{ question }}</p>
+                {% set group_name = loop.index0 %} {% for option in
+                options[loop.index0] %} {% set index = loop.index0 %}
+                <label>
+                    <input
+                        type="radio"
+                        name="{{ group_name }}"
+                        value="{{ index }}"
+                        required
+                    />
+                    {{ option }} </label
+                ><br />
+                {% endfor %}
+            </div>
             {% endfor %}
-            <br>
+            <br />
             <button type="submit">Submit</button>
         </form>
 
         <script>
             var myAudio = document.getElementById("myAudio");
             var progressBar = document.getElementById("progress-bar");
-    
-            myAudio.addEventListener("timeupdate", function(){
+
+            myAudio.addEventListener("timeupdate", function () {
                 var progress = (myAudio.currentTime / myAudio.duration) * 100;
-                progressBar.querySelector(".progress").style.width = progress + "%";
+                progressBar.querySelector(".progress").style.width =
+                    progress + "%";
             });
         </script>
     </body>

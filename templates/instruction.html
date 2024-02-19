@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='static/style.css') }}"
+        />
         <title>Mandarin Placement Quiz</title>
     </head>
     <body>
         <div class="topbar">
             <h1>{{ section_name }}</h1>
         </div>
-        <br>
+        <br />
         <form action="{{ url_for('continue_test') }}" method="post">
-            <p>{{ instructions }}</p><br><br>
+            <p>{{ instructions }}</p>
+            <br /><br />
             <button type="submit">Continue</button>
         </form>
     </body>
