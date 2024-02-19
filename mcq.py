@@ -27,7 +27,7 @@ class MCQ:
         question_vars("rmcq")
         question_vars("lmcq")
 
-    def get_question(self) -> (str, list[str], list[list[str]]): # returns question prompt, questions, and options
+    def get_question(self) -> tuple[str, list[str], list[list[str]]]: # returns question prompt, questions, and options
         index, self.question_answers = select_question(self)
         questions, selections = [], []
         for i in index:
@@ -70,7 +70,7 @@ def question_vars(file: str) -> None:
     _questions_np.append(np.array([[1, level, 1 / len(answers), 1] for _, _, level, answers, _ in questions]))
 
 
-def select_question(mcq: MCQ) -> (list[int], list[int]): # select question based on theta, return list of question indexes and answers
+def select_question(mcq: MCQ) -> tuple[list[int], list[int]]: # select question based on theta, return list of question indexes and answers
     question_number = _selector.select(None, _questions_np[mcq.section], mcq.questions_answered, mcq.theta) # algorithm selects question index
     for i in _connected_questions[mcq.section]:
         if question_number in i: # check if index in _connected_questions
