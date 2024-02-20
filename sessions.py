@@ -9,11 +9,11 @@ class Session:
 	student_data: list
 	student_data_adv: list # TODO remove after tests
 	section: int # 0: reading, 1: listening, 2: speaking, 3: writing computer, 4: writing paper
+	writing_prompt: int # index of typed prompt given
 
 	reading: mcq
 	listening: mcq
 	free_response: frq
-	writing_prompt: int # index of typed prompt given
 
 	def __init__(self, student_id: int, name: str):
 		self.student_id = student_id
@@ -27,15 +27,15 @@ class Session:
 		os.mkdir(f"student_data/{self.student_id}")
 
 	def export_data(self) -> None:
-		data = {"Name": self.name}
-		if self.section >= 1: data["Reading"] = self.student_data[0]
-		if self.section >= 2: data["Listening"] = str(self.student_data[1]) + "\n\n"
+		data = {"name": self.name}
+		if self.section >= 1: data["reading"] = self.student_data[0]
+		if self.section >= 2: data["listening"] = str(self.student_data[1]) + "\n\n"
 		if self.section >= 4: 
-			data["Writing Prompt"] = json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
-			data["Writing"] = self.student_data[2]
-		with open(f'student_data/{self.student_id}/scores.txt', 'w', encoding="utf-8") as file:
-			for i in data:
-				file.write(i + ": " + str(data[i]) + '\n')
+			data["writing prompt"] = json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
+			data["writing"] = self.student_data[2]
+
+		with open(f'student_data/{self.student_id}/scores.json', 'w', encoding="utf-8") as file:
+			json.dump(data, file, ident=4)
 		with open(f'student_data/{self.student_id}/scores_adv.json', 'w') as file: # TODO remove after tests
 			json.dump(self.student_data_adv, file, indent=4)
 

@@ -8,7 +8,6 @@ This is still a work-in-progress project. Currently focused on the Mandarin prog
 
 - [Flask](https://pypi.org/project/Flask/) (Website management)
 - [catsim](https://pypi.org/project/catsim/) (Adaptive testing calculations)
-- [NumPy](https://pypi.org/project/numpy/) (Question bank management)
 
 ## To Run
 
