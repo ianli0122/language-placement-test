@@ -29,13 +29,13 @@ class Session:
 	def export_data(self) -> None:
 		data = {"name": self.name}
 		if self.section >= 1: data["reading"] = self.student_data[0]
-		if self.section >= 2: data["listening"] = str(self.student_data[1]) + "\n\n"
+		if self.section >= 2: data["listening"] = self.student_data[1]
 		if self.section >= 4: 
 			data["writing prompt"] = json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
 			data["writing"] = self.student_data[2]
 
 		with open(f'student_data/{self.student_id}/scores.json', 'w', encoding="utf-8") as file:
-			json.dump(data, file, ident=4)
+			json.dump(data, file, indent=4)
 		with open(f'student_data/{self.student_id}/scores_adv.json', 'w') as file: # TODO remove after tests
 			json.dump(self.student_data_adv, file, indent=4)
 

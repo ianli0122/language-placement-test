@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, make_response
+from werkzeug.serving import is_running_from_reloader
 from os.path import splitext
 import sessions
 
@@ -139,6 +140,16 @@ def submit_writing():
     session.student_data.append(request.form.get('frq'))
     session.export_data()
     return redirect('/instruction')
+
+@app.route('/shutdown', methods=['GET'])
+def shutdown():
+    shutdown_server()
+    return "server shutting down"
+
+def shutdown_server():
+    if is_running_from_reloader():
+        func = request.environ.get('werkzeug.server.shutdown')
+        print(func)
 
 if __name__ == '__main__':
     app.run(port=3001, host="0.0.0.0", debug=True)
