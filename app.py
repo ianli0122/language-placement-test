@@ -1,9 +1,16 @@
-from flask import Flask, render_template, request, redirect, make_response
-from werkzeug.serving import is_running_from_reloader
+from flask import Flask, render_template, request, redirect, make_response, abort
+from werkzeug.serving import make_server
 from os.path import splitext
 import sessions
 
 app = Flask(__name__, static_url_path='', static_folder='')
+allow_connections = False
+
+@app.before_request
+def check_active():
+    print(allow_connections)
+    if not allow_connections:
+        abort(403)
 
 def get_session() -> sessions: # return specific session
     return sessions.get_session(request.cookies.get('id'))
@@ -141,15 +148,10 @@ def submit_writing():
     session.export_data()
     return redirect('/instruction')
 
-@app.route('/shutdown', methods=['GET'])
-def shutdown():
-    shutdown_server()
-    return "server shutting down"
-
-def shutdown_server():
-    if is_running_from_reloader():
-        func = request.environ.get('werkzeug.server.shutdown')
-        print(func)
+def run():
+    server = make_server("0.0.0.0", 3001, app)
+    server.serve_forever()
 
 if __name__ == '__main__':
-    app.run(port=3001, host="0.0.0.0", debug=True)
+    run()
+    allow_connections = True
