@@ -3,37 +3,62 @@ from socket import getfqdn, gethostbyname_ex
 from threading import Thread
 from signal import SIGTERM
 from json import load
+from pygame import mixer
 import app, sessions
 import customtkinter as ctk
 from tkinter import ttk
 
 '''Methods'''
 def update_student_data():
-    print("update")
-    for item in listdir("data/student_data"): # Loop through student_data directory
-        if path.isdir(f"data/student_data/{item}") and item.startswith("1000") and len(item) == 9: # Check if folder is valid
-            if item not in student_data: # Student not in database yet
-                student_data[item] = {}
+    for id in listdir("data/student_data"): # Loop through student_data directory
+        if path.isdir(f"data/student_data/{id}") and id.startswith("1000") and len(id) == 9: # Check if folder is valid
+            if id not in student_data: # Student not in database yet
+                student_data[id] = {}
                 inserted = False
                 for index, i in enumerate(listbox.get_children()):
-                    if int(item) < int(listbox.item(i, "text")):
-                        listbox.insert("", index, text=item)
+                    if int(id) < int(listbox.item(i, "text")):
+                        listbox.insert("", index, text=id)
                         inserted = True
                         break
                 if not inserted:
-                    listbox.insert("", "end", text=item)
+                    listbox.insert("", "end", text=id)
             try:
-                with open(f"data/student_data/{item}/scores.json", 'r', encoding = "utf-8") as file: # Update student data
-                    student_data[item] = load(file) # Reload json data
+                with open(f"data/student_data/{id}/scores.json", 'r', encoding = "utf-8") as file: # Update student data
+                    json_data = load(file)
+                    if not(len(student_data[id]) == len(json_data) or len(student_data[id]) == len(json_data) + 1):
+                        student_data[id] = json_data # Reload json data
+                if len(student_data[id]) == 5:
+                    for audio in listdir(f"data/student_data/{id}"):
+                        if path.splitext(audio)[1] in [".mp3", ".m4a", ".wav"]:
+                            student_data[id]["audio"] = f"data/student_data/{id}/{audio}"
+                            break
             except:
                 pass
-    root.after(2000, update_student_data) # Refresh every 3s
 
 def update_connections():
     users.configure(text=str(sessions.total_session()))
-    root.after(2000, update_connections)
+
+def update_audio_slider():
+    global audio_file, playback
+    if audio_controls.cget("text") == "\u23F8":
+        playback += 1
+
+    try:
+        if playback / mixer.Sound.get_length(audio_file) > 1:
+            playback = 0
+        audio_slider.set(playback / mixer.Sound.get_length(audio_file))
+    except:
+        print("Error updating audio slider")
+
+def updates(): # Main update functions
+    update_student_data()
+    update_connections()
+    update_audio_slider()
+    root.after(1000, updates) # Wait 2s
 
 def on_select(event):
+    global audio_file, playback
+    # Resets
     student = listbox.item(listbox.focus(), "text")
     student_name.configure(text="")
     reading_score.configure(text="")
@@ -42,6 +67,11 @@ def on_select(event):
     writing.configure(state="normal")
     writing.delete("1.0", "end")
     writing.configure(state="disabled")
+    mixer.music.unload()
+    audio_file = 0
+    audio_slider.set(0)
+    audio_controls.configure(text="\u23F5")
+    playback = 0
 
     try:
         student_name.configure(text=student_data[student]["name"])
@@ -52,7 +82,42 @@ def on_select(event):
         writing.insert("1.0", "\n" + student_data[student]["writing"])
         writing.configure(state="disabled")
     except:
-        pass
+        print("Error loading main data:")
+        print(student_data[student])
+
+    try:
+        mixer.music.load(student_data[student]["audio"])
+        audio_file = mixer.Sound(student_data[student]["audio"])
+    except:
+        print("Error loading audio:")
+        print(student_data[student])
+
+def on_play():
+    try:
+        if audio_controls.cget("text") == "\u23F5":
+            if playback == 0:
+                mixer.music.play(loops=-1)
+            else:
+                mixer.music.unpause()
+            audio_controls.configure(text="\u23F8")
+        else:
+            mixer.music.pause()
+            audio_controls.configure(text="\u23F5")
+    except:
+        print("Error playing audio")
+
+def on_audio_scroll(event):
+    global audio_file, playback
+    try:
+        time = mixer.Sound.get_length(audio_file) * audio_slider.get()
+        mixer.music.set_pos(time)
+        playback = time
+    except:
+        audio_slider.set(0)
+        print("No audio to scroll")
+
+def on_volume_scroll(event):
+    mixer.music.set_volume(volume_slider.get())
 
 def start_test():
     app.allow_connections = True
@@ -72,6 +137,8 @@ root.title("Adaptive Testing Dashboard")
 ctk.set_default_color_theme("dark-blue")
 ctk.set_appearance_mode("dark")
 student_data: dict = {}
+audio_file = 0
+playback = 0
 
 '''Main'''
 # Top
@@ -100,7 +167,7 @@ treestyle.map(
     foreground=[('selected', root._apply_appearance_mode(ctk.ThemeManager.theme["CTkButton"]["fg_color"]))])
 listbox.bind("<<TreeviewSelect>>", on_select)
 
-# Data
+# Data Labels
 data_frame = ctk.CTkFrame(root, corner_radius=20)
 data_label = ctk.CTkLabel(data_frame, text="Student Data", font=("Arial", 24, "bold"), anchor="w")
 student_name_label = ctk.CTkLabel(data_frame, text="Name: ", font=("Arial", 16, "bold"))
@@ -108,11 +175,19 @@ reading_score_label = ctk.CTkLabel(data_frame, text="Reading Score: ", font=("Ar
 listening_score_label = ctk.CTkLabel(data_frame, text="Listening Score: ", font=("Arial", 16, "bold"))
 writing_prompt_label = ctk.CTkLabel(data_frame, text="\nWriting Prompt: ", font=("Arial", 16, "bold"))
 writing_label = ctk.CTkLabel(data_frame, text="Writing: ", font=("Arial", 16, "bold"))
+audio_label = ctk.CTkLabel(data_frame, text="Audio: ", font=("Arial", 16, "bold"))
+# Data
 student_name = ctk.CTkLabel(data_frame, text="", font=("Arial", 12))
 reading_score = ctk.CTkLabel(data_frame, text="", font=("Arial", 12))
 listening_score = ctk.CTkLabel(data_frame, text="", font=("Arial", 12))
 writing_prompt = ctk.CTkLabel(data_frame, text="", font=("Arial", 12), wraplength=500)
 writing = ctk.CTkTextbox(data_frame, font=("Arial", 12), width=400, height=300, wrap="word", corner_radius=0, border_spacing=0, fg_color="transparent", state="disabled")
+audio_controls = ctk.CTkButton(data_frame, text="\u23F5", font=("Arial", 16, "bold"), width=20, height=20, command=on_play)
+audio_slider = ctk.CTkSlider(data_frame, command=on_audio_scroll)
+volume_icon = ctk.CTkLabel(data_frame, text="\U0001F50A", font=("Arial", 24, "bold"))
+volume_slider = ctk.CTkSlider(data_frame, width=100, command=on_volume_scroll)
+audio_slider.set(0)
+volume_slider.set(1)
 
 # Action
 action_frame = ctk.CTkFrame(root, corner_radius=20)
@@ -138,6 +213,9 @@ root.rowconfigure(2, weight=5)
 root.columnconfigure(0, weight=2)
 root.columnconfigure(1, weight=4)
 root.columnconfigure(2, weight=1)
+data_frame.columnconfigure((0, 4), weight=2)
+data_frame.columnconfigure((1, 3), weight=1)
+data_frame.columnconfigure(2, weight=4)
 
 # Top
 top_frame.grid(row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
@@ -149,7 +227,7 @@ list_label.pack(side="top", fill="x", pady=10, padx=15)
 listbox_scroll.pack(side="top", fill="both", padx=10, pady=(0, 10), expand=True)
 listbox.pack(side="top", expand=True, fill="both")
 
-# Data
+# Data labels
 data_frame.grid(row=1, column=1, rowspan=2, padx=10, pady=(0, 10), sticky="nsew")
 data_label.grid(row=0, sticky="n", pady=10, padx=15)
 student_name_label.grid(row=1, column=0, sticky="nw", padx=10)
@@ -157,11 +235,17 @@ reading_score_label.grid(row=2, column=0, sticky="nw", padx=10)
 listening_score_label.grid(row=3, column=0, sticky="nw", padx=10)
 writing_prompt_label.grid(row=4, column=0, sticky="nw", padx=10)
 writing_label.grid(row=5, column=0, sticky="nw", padx=10)
-student_name.grid(row=1, column=1, sticky="w")
-reading_score.grid(row=2, column=1, sticky="w")
-listening_score.grid(row=3, column=1, sticky="w")
-writing_prompt.grid(row=4, column=1, sticky="w")
-writing.grid(row=5, column=1, sticky="w")
+audio_label.grid(row=6, column=0, sticky="nw", padx=10)
+# Data
+student_name.grid(row=1, column=1, columnspan=4, sticky="w")
+reading_score.grid(row=2, column=1, columnspan=4, sticky="w")
+listening_score.grid(row=3, column=1, columnspan=4, sticky="w")
+writing_prompt.grid(row=4, column=1, columnspan=4, sticky="w")
+writing.grid(row=5, column=1, columnspan=4, sticky="w")
+audio_controls.grid(row=6, column=1)
+audio_slider.grid(row=6, column=2, sticky="w")
+volume_icon.grid(row=6, column=3, sticky="e")
+volume_slider.grid(row=6, column=4, sticky="w")
 
 # Action
 action_frame.grid(row=1, column=2, padx=10, pady=(0, 10), sticky="nsew")
@@ -178,8 +262,8 @@ connection.grid(row=1, column=1, sticky="w")
 users.grid(row=2, column=1, sticky="w")
 ip_label.grid(row=3, column=0, columnspan=2, padx=10, sticky="w")
 
-update_student_data() # Initial update data
-update_connections()
+mixer.init() # Mixer initialization
+updates() # Initial update call
 flask_thread = Thread(target=app.run) 
 flask_thread.start() # Start server
 root.protocol("WM_DELETE_WINDOW", close) # Exit cleanup, kill server
