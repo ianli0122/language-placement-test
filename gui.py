@@ -48,7 +48,7 @@ def update_audio_slider():
             playback = 0
         audio_slider.set(playback / mixer.Sound.get_length(audio_file))
     except:
-        print("Error updating audio slider")
+        pass
 
 def updates(): # Main update functions
     update_student_data()
@@ -130,7 +130,7 @@ def stop_test():
 def close():
     kill(getpid(), SIGTERM)
 
-# Root Init
+'''Root init'''
 root = ctk.CTk()
 root.geometry("1280x720")
 root.title("Adaptive Testing Dashboard")
@@ -262,6 +262,7 @@ connection.grid(row=1, column=1, sticky="w")
 users.grid(row=2, column=1, sticky="w")
 ip_label.grid(row=3, column=0, columnspan=2, padx=10, sticky="w")
 
+'''Init'''
 mixer.init() # Mixer initialization
 updates() # Initial update call
 flask_thread = Thread(target=app.run) 

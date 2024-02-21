@@ -1,2 +1,4 @@
 catsim
 flask
+pygame
+customtkinter

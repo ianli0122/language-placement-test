@@ -1,51 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-            rel="stylesheet"
-            href="{{ url_for('static', filename='static/style.css') }}"
-        />
-        <title>Mandarin Placement Quiz</title>
-    </head>
-    <body>
-        <div class="topbar">
-            <h1>Mandarin Placement Quiz</h1>
-        </div>
-        <br />
-        <form
-            onsubmit="return validateForm()"
-            action="{{ url_for('start') }}"
-            method="post"
-        >
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required /><br /><br />
-            <label for="student_id">Student ID:</label>
-            <input
-                type="text"
-                id="student_id"
-                name="student_id"
-                required
-            /><br />
-            <span id="validationMessage" style="color: red"></span>
-            <br /><br />
-            <button type="submit">Next</button>
-        </form>
-        <script>
-            function validateForm() {
-                var pattern = /^1000\d{5}$/;
-                var validationMessageElement =
-                    document.getElementById("validationMessage");
-                if (pattern.test(document.getElementById("student_id").value)) {
-                    validationMessageElement.textContent = "";
-                    return true;
-                } else {
-                    validationMessageElement.textContent =
-                        "Please enter a valid student ID (1000xxxxx)";
-                    return false;
-                }
+{% extends "template.html" %}
+{% block content %}
+    <br>
+    <form onsubmit="return validateForm()" action="{{ url_for('start') }}" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="student_id">Student ID:</label>
+        <input type="text" id="student_id" name="student_id" required><br>
+        <span id="validationMessage" style="color: red"></span>
+        <br><br>
+        <button type="submit">Next</button>
+    </form>
+    <script>
+        function validateForm() {
+            var pattern = /^1000\d{5}$/;
+            var validationMessageElement =
+            document.getElementById("validationMessage");
+            if (pattern.test(document.getElementById("student_id").value)) {
+                validationMessageElement.textContent = "";
+                return true;
+            } else {
+                validationMessageElement.textContent =
+                "Please enter a valid student ID (1000xxxxx)";
+                return false;
             }
+        }
         </script>
-    </body>
-</html>
+{% endblock content %}

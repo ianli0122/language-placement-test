@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, make_response, abort
+from flask import Flask, render_template, request, redirect, make_response, abort, send_from_directory
 from werkzeug.serving import make_server
-from os.path import splitext
+from os.path import splitext, join
 import sessions
 
 app = Flask(__name__, static_url_path='', static_folder='')
@@ -10,6 +10,10 @@ allow_connections = False
 def check_active():
     if not allow_connections:
         abort(403)
+
+@app.route('/favicon.ico')
+def favicon(): # TODO fix favicons
+    return send_from_directory(join(app.root_path, 'static'), 'favicon.ico')
 
 def get_session() -> sessions: # return specific session
     return sessions.get_session(request.cookies.get('id'))
@@ -147,7 +151,7 @@ def submit_writing():
     return redirect('/instruction')
 
 def run():
-    server = make_server("0.0.0.0", 3001, app)
+    server = make_server("0.0.0.0", 3001, app) # TODO check ip
     server.serve_forever()
 
 if __name__ == '__main__':
