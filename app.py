@@ -8,7 +8,6 @@ allow_connections = False
 
 @app.before_request
 def check_active():
-    print(allow_connections)
     if not allow_connections:
         abort(403)
 
@@ -135,10 +134,9 @@ def create_frq_question_page():
 @app.route('/upload-speaking', methods=['POST'])
 def upload_speaking():
     session = get_session()
-    request.files['file'].save(f"student_data/{session.student_id}/speaking{splitext(request.files['file'].filename)[1]}")
+    request.files['file'].save(f"data/student_data/{session.student_id}/speaking{splitext(request.files['file'].filename)[1]}")
     session.section += 1
     return redirect('/instruction')
-
 
 @app.route('/submit-writing', methods=['POST'])
 def submit_writing():

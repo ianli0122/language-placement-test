@@ -1,4 +1,4 @@
-import json
+from json import load
 from random import randint
 
 class FRQ:
@@ -28,5 +28,5 @@ class FRQ:
 
 _questions: list = []
 def question_vars(file: str) -> None:
-    with open(f"question_data/{file}.json", 'r', encoding="utf8") as questionFile:
-        _questions.append(json.load(questionFile))
+    with open(f"data/question_data/{file}.json", 'r', encoding="utf8") as questionFile:
+        _questions.append(load(questionFile))

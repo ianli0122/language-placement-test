@@ -2,8 +2,8 @@ from catsim.selection import MaxInfoSelector
 from catsim.estimation import NumericalSearchEstimator
 from catsim.stopping import MaxItemStopper, MinErrorStopper
 from random import random
+from json import load
 import numpy as np
-import json
 
 # catsim variables
 _selector = MaxInfoSelector()
@@ -53,10 +53,10 @@ _questions: list[list[str, str, int, list[str], int]] = [] # list[prompt: str, q
 _connected_questions: list[list[list[int]]] = [] # list[list[int]] connected questions
 _questions_np: list[any] = []
 def question_vars(file: str) -> None:
-    with open(f"question_data/{file}.json", 'r', encoding="utf8") as questionFile:
+    with open(f"data/question_data/{file}.json", 'r', encoding="utf8") as questionFile:
         questions: list[str, str, int, list[str], int]= []
         connected_questions: list[list[int]] = []
-        for i in json.load(questionFile):
+        for i in load(questionFile):
             if type(i["question_data"]) == dict: # check if connected questions
                 questions.append([i["prompt"], i["question_data"]["question"], i["difficulty"], i["question_data"]["options"], i["question_data"]["correct"]])
             else:

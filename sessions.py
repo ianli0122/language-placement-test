@@ -1,7 +1,7 @@
 from random import randint
+from os import mkdir
+from json import dump, load
 import mcq, frq
-import json
-import os
 
 class Session:
 	name: str
@@ -24,20 +24,20 @@ class Session:
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
 		self.free_response = frq.FRQ()
-		os.mkdir(f"student_data/{self.student_id}")
+		mkdir(f"data/student_data/{self.student_id}")
 
 	def export_data(self) -> None:
 		data = {"name": self.name}
 		if self.section >= 1: data["reading"] = self.student_data[0]
 		if self.section >= 2: data["listening"] = self.student_data[1]
 		if self.section >= 4: 
-			data["writing prompt"] = json.load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
+			data["writing prompt"] = load(open("question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
 			data["writing"] = self.student_data[2]
 
-		with open(f'student_data/{self.student_id}/scores.json', 'w', encoding="utf-8") as file:
-			json.dump(data, file, indent=4)
-		with open(f'student_data/{self.student_id}/scores_adv.json', 'w') as file: # TODO remove after tests
-			json.dump(self.student_data_adv, file, indent=4)
+		with open(f'data/student_data/{self.student_id}/scores.json', 'w', encoding="utf-8") as file:
+			dump(data, file, indent=4)
+		with open(f'data/student_data/{self.student_id}/scores_adv.json', 'w') as file: # TODO remove after tests
+			dump(self.student_data_adv, file, indent=4)
 
 _sessions: dict[str: Session] = {}
 
@@ -55,5 +55,10 @@ def has_session(id: str) -> bool:
 def get_session(id: str) -> Session:
 	return _sessions[id]
 
+# get total active sessions
+def total_session() -> int:
+	return len(_sessions)
+
+# remove instance
 def remove_session(id: str) -> None:
 	del _sessions[id]
