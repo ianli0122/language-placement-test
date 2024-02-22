@@ -53,7 +53,11 @@ _questions: list[list[str, str, int, list[str], int]] = [] # list[prompt: str, q
 _connected_questions: list[list[list[int]]] = [] # list[list[int]] connected questions
 _questions_np: list[any] = []
 def question_vars(file: str) -> None:
-    with open(f"data/question_data/{file}.json", 'r', encoding="utf8") as questionFile:
+    try:
+        questionFile = open(f"_internal/static/question_data/{file}.json", 'r', encoding="utf8")
+    except FileNotFoundError:
+        questionFile = open(f"static/question_data/{file}.json", 'r', encoding="utf8")
+    finally:
         questions: list[str, str, int, list[str], int]= []
         connected_questions: list[list[int]] = []
         for i in load(questionFile):

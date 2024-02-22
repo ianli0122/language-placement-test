@@ -28,5 +28,9 @@ class FRQ:
 
 _questions: list = []
 def question_vars(file: str) -> None:
-    with open(f"data/question_data/{file}.json", 'r', encoding="utf8") as questionFile:
+    try:
+        questionFile = open(f"_internal/static/question_data/{file}.json", 'r', encoding="utf8")
+    except FileNotFoundError:
+        questionFile = open(f"static/question_data/{file}.json", 'r', encoding="utf8")
+    finally:
         _questions.append(load(questionFile))

@@ -30,9 +30,14 @@ class Session:
 		data = {"name": self.name}
 		if self.section >= 1: data["reading"] = self.student_data[0]
 		if self.section >= 2: data["listening"] = self.student_data[1]
-		if self.section >= 4: 
-			data["writing prompt"] = load(open("data/question_data/wfrq.json", 'r', encoding="utf-8"))[self.writing_prompt]
-			data["writing"] = self.student_data[2]
+		if self.section >= 4:
+			try: 
+				writing_frq = open("_internal/static/question_data/wfrq.json", 'r', encoding="utf-8")
+			except FileNotFoundError:
+				writing_frq = open("static/question_data/wfrq.json", 'r', encoding="utf-8")
+			finally:
+				data["writing prompt"] = load(writing_frq)[self.writing_prompt]
+				data["writing"] = self.student_data[2]
 
 		with open(f'data/student_data/{self.student_id}/scores.json', 'w', encoding="utf-8") as file:
 			dump(data, file, indent=4)

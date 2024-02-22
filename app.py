@@ -5,7 +5,7 @@ from time import time, localtime
 import logging
 import sessions
 
-app = Flask(__name__, static_url_path='', static_folder='')
+app = Flask(__name__)
 allow_connections = False
 timeformat = localtime(time())
 logging.basicConfig(filename=f'data/logs/{timeformat.tm_year}-{timeformat.tm_mon}-{timeformat.tm_mday}-{timeformat.tm_hour}-{timeformat.tm_min}-{timeformat.tm_sec}.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s: %(message)s', encoding="utf-8")
