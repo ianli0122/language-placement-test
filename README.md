@@ -15,10 +15,10 @@ This application is still in development.
 
 ## To Run
 
-`python gui.py`
+`python adaptive_test.py`
 
 ## To Build
-`pyinstaller --onedir --add-data="data;data" --add-data="templates;templates" --add-data="static;static" --add-data="scripts;scripts" --add-data="path/to/customtkinter;customtkinter" gui.py app.py sessions.py frq.py mcq.py`
+`pyinstaller --onedir --noconsole --add-data="data;data" --add-data="templates;templates" --add-data="static;static" --add-data="scripts;scripts" --add-data="path/to/customtkinter;customtkinter" gui.py app.py sessions.py frq.py mcq.py`
 
 After building, drag the "data" folder out from internals to the same directory as the executable
 
