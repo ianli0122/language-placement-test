@@ -1,21 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
-        <title>Mandarin Placement Quiz</title>
-    </head>
-    <body>
-        <div class="topbar">
-            <h1>Mandarin Placement Quiz</h1>
-        </div>
+{% extends "template.html" %}
+{% block content %}
         <div class="questioncounter">
             <h3>{{ questionnumber }}</h3>
         </div>
         <br>
-        <form action="{{ url_for('submit_mcq') }}" method="post">
-            <p>{{ prompt }}</p><br><br>
+        <form id="question_form" onsubmit="return validate()" action="{{ url_for('submit_mcq') }}" method="post">
+            <p>{{ prompt }}</p>
+            <br><br>
             {% for question in questions %}
                 <div class="question">
                     <p>{{ question }}</p>
@@ -23,13 +14,26 @@
                     {% for option in options[loop.index0] %}
                         {% set index = loop.index0 %}
                         <label>
-                            <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }}
+                            <input type="radio" name="{{ group_name }}" value="{{ index }}" required> {{ option }} 
                         </label><br>
                     {% endfor %}
                 </div>
             {% endfor %}
             <br>
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit">Submit</button>
         </form>
-    </body>
-</html>
+        <script>
+            const button = document.getElementById("submit");
+            const question_form = document.getElementById("question_form")
+            function validate() {
+                button.addEventListener("click", function(event) {
+                    if (question_form.checkValidity()) {
+                        button.disabled = true;
+                        return true
+                    } else {
+                        return false
+                    }
+                })
+            }
+        </script>
+{% endblock content %}

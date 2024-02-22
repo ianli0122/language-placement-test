@@ -1,4 +1,4 @@
-import json
+from json import load
 from random import randint
 
 class FRQ:
@@ -17,7 +17,7 @@ class FRQ:
         while self.selectedPrompts[1] == self.selectedPrompts[2]:
             self.selectedPrompts[2] = randint(0, len(_questions[1]) - 1)
     
-    def select_prompt(self, section: int) -> (str, int): # returns prompt, typed prompt index
+    def select_prompt(self, section: int) -> tuple[str, int]: # returns prompt, typed prompt index
         section -= 2
         if section == 0:
             return _questions[section][self.selectedPrompts[section]], -1
@@ -28,5 +28,9 @@ class FRQ:
 
 _questions: list = []
 def question_vars(file: str) -> None:
-    with open(f"question_data/{file}.json", 'r', encoding="utf8") as questionFile:
-        _questions.append(json.load(questionFile))
+    try:
+        questionFile = open(f"_internal/static/question_data/{file}.json", 'r', encoding="utf8")
+    except FileNotFoundError:
+        questionFile = open(f"static/question_data/{file}.json", 'r', encoding="utf8")
+    finally:
+        _questions.append(load(questionFile))
