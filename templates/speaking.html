@@ -1,12 +1,26 @@
 {% extends "template.html" %}
 {% block content %}
     <br>
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_speaking') }}">
+    <form id="question_form" onsubmit="return validate()" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_speaking') }}">
         <p>{{ prompt }}</p>
         <p id="timerTitle"></p>
         <p id="timer"></p>
         <br>
-        <input type="file" name="file" accept=".wav,.m4a,.mp3"><br><br><br>
-        <button type="submit">Submit</button>
+        <input type="file" name="file" accept=".wav,.m4a,.mp3" required><br><br><br>
+        <button type="submit" id="submit">Submit</button>
     </form>
+    <script>
+        const button = document.getElementById("submit");
+        const question_form = document.getElementById("question_form")
+        function validate() {
+            button.addEventListener("click", function(event) {
+                if (question_form.checkValidity()) {
+                    button.disabled = true;
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }        
+    </script>
 {% endblock content %}

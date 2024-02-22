@@ -4,6 +4,7 @@ from threading import Thread
 from signal import SIGTERM
 from json import load
 from pygame import mixer
+import logging
 import app, sessions
 import customtkinter as ctk
 from tkinter import ttk
@@ -22,15 +23,18 @@ def update_student_data():
                         break
                 if not inserted:
                     listbox.insert("", "end", text=id)
+                logging.info(f"{id}: inserted")
             try:
                 with open(f"data/student_data/{id}/scores.json", 'r', encoding = "utf-8") as file: # Update student data
                     json_data = load(file)
                     if not(len(student_data[id]) == len(json_data) or len(student_data[id]) == len(json_data) + 1):
                         student_data[id] = json_data # Reload json data
+                        logging.info(f"{id}: json data reloaded")
                 if len(student_data[id]) == 5:
                     for audio in listdir(f"data/student_data/{id}"):
                         if path.splitext(audio)[1] in [".mp3", ".m4a", ".wav"]:
                             student_data[id]["audio"] = f"data/student_data/{id}/{audio}"
+                            logging.info(f"{id}: audio loaded")
                             break
             except:
                 pass
@@ -46,6 +50,7 @@ def update_audio_slider():
     try:
         if playback / mixer.Sound.get_length(audio_file) > 1:
             playback = 0
+            logging.info("Music looped, reset slider")
         audio_slider.set(playback / mixer.Sound.get_length(audio_file))
     except:
         pass
@@ -72,6 +77,7 @@ def on_select(event):
     audio_slider.set(0)
     audio_controls.configure(text="\u23F5")
     playback = 0
+    logging.info(f"Cleared data in preparation for {student}")
 
     try:
         student_name.configure(text=student_data[student]["name"])
@@ -81,30 +87,32 @@ def on_select(event):
         writing.configure(state="normal")
         writing.insert("1.0", "\n" + student_data[student]["writing"])
         writing.configure(state="disabled")
+        logging.info(f"Loaded {student} into data")
     except:
-        print("Error loading main data:")
-        print(student_data[student])
+        logging.warning(f"Error loading main data: {student_data[student]}")
 
     try:
         mixer.music.load(student_data[student]["audio"])
         audio_file = mixer.Sound(student_data[student]["audio"])
     except:
-        print("Error loading audio:")
-        print(student_data[student])
+        logging.warning(f"Error loading audio: {student_data[student]}")
 
 def on_play():
     try:
         if audio_controls.cget("text") == "\u23F5":
             if playback == 0:
                 mixer.music.play(loops=-1)
+                logging.info("Audio started")
             else:
                 mixer.music.unpause()
+                logging.info("Audio resumed")
             audio_controls.configure(text="\u23F8")
         else:
             mixer.music.pause()
+            logging.info("Audio paused")
             audio_controls.configure(text="\u23F5")
     except:
-        print("Error playing audio")
+        logging.warning("Error playing audio")
 
 def on_audio_scroll(event):
     global audio_file, playback
@@ -112,9 +120,10 @@ def on_audio_scroll(event):
         time = mixer.Sound.get_length(audio_file) * audio_slider.get()
         mixer.music.set_pos(time)
         playback = time
+        logging.info(f"Audio set to {time}")
     except:
         audio_slider.set(0)
-        print("No audio to scroll")
+        logging.warning("No audio to scroll")
 
 def on_volume_scroll(event):
     mixer.music.set_volume(volume_slider.get())
@@ -122,12 +131,15 @@ def on_volume_scroll(event):
 def start_test():
     app.allow_connections = True
     connection.configure(text="Allowed", text_color="green")
+    logging.info("Test started")
 
 def stop_test():
     app.allow_connections = False
     connection.configure(text="Blocked", text_color="red")
+    logging.info("Test stopped")
 
 def close():
+    logging.info("Closing app")
     kill(getpid(), SIGTERM)
 
 '''Root init'''
@@ -230,12 +242,12 @@ listbox.pack(side="top", expand=True, fill="both")
 # Data labels
 data_frame.grid(row=1, column=1, rowspan=2, padx=10, pady=(0, 10), sticky="nsew")
 data_label.grid(row=0, sticky="n", pady=10, padx=15)
-student_name_label.grid(row=1, column=0, sticky="nw", padx=10)
-reading_score_label.grid(row=2, column=0, sticky="nw", padx=10)
-listening_score_label.grid(row=3, column=0, sticky="nw", padx=10)
-writing_prompt_label.grid(row=4, column=0, sticky="nw", padx=10)
-writing_label.grid(row=5, column=0, sticky="nw", padx=10)
-audio_label.grid(row=6, column=0, sticky="nw", padx=10)
+student_name_label.grid(row=1, column=0, sticky="nw", padx=15)
+reading_score_label.grid(row=2, column=0, sticky="nw", padx=15)
+listening_score_label.grid(row=3, column=0, sticky="nw", padx=15)
+writing_prompt_label.grid(row=4, column=0, sticky="nw", padx=15)
+writing_label.grid(row=5, column=0, sticky="nw", padx=15)
+audio_label.grid(row=6, column=0, sticky="nw", padx=15)
 # Data
 student_name.grid(row=1, column=1, columnspan=4, sticky="w")
 reading_score.grid(row=2, column=1, columnspan=4, sticky="w")

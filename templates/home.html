@@ -1,22 +1,23 @@
 {% extends "template.html" %}
 {% block content %}
     <br>
-    <form onsubmit="return validateForm()" action="{{ url_for('start') }}" method="post">
+    <form onsubmit="return validate()" action="{{ url_for('start') }}" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
         <label for="student_id">Student ID:</label>
         <input type="text" id="student_id" name="student_id" required><br>
         <span id="validationMessage" style="color: red"></span>
         <br><br>
-        <button type="submit">Next</button>
+        <button type="submit" id="submit">Next</button>
     </form>
     <script>
-        function validateForm() {
-            var pattern = /^1000\d{5}$/;
-            var validationMessageElement =
-            document.getElementById("validationMessage");
+        function validate() {
+            const pattern = /^1000\d{5}$/;
+            const validationMessageElement = document.getElementById("validationMessage");
+            const button = document.getElementById("submit")
             if (pattern.test(document.getElementById("student_id").value)) {
                 validationMessageElement.textContent = "";
+                button.disabled = true
                 return true;
             } else {
                 validationMessageElement.textContent =

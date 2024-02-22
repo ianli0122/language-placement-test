@@ -1,9 +1,18 @@
 {% extends "template.html" %}
 {% block content %}
     <br>
-    <form action="{{ url_for('continue_test') }}" method="post">
+    <form onsubmit="return validate()" action="{{ url_for('continue_test') }}" method="post">
         <p>{{ instructions }}</p>
         <br><br>
-        <button type="submit">Continue</button>
+        <button type="submit" id="submit">Continue</button>
     </form>
+    <script>
+        const button = document.getElementById("submit")
+        function validate() {
+            button.addEventListener("click", function(event) {
+                button.disabled = true;
+                return true;
+            })
+        }
+    </script>
 {% endblock content %}

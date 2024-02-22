@@ -1,4 +1,4 @@
-catsim
 flask
-pygame
+catsim
 customtkinter
+pygame

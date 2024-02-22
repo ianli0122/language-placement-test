@@ -4,7 +4,7 @@
             <h3>{{ questionnumber }}</h3>
         </div>
         <br>
-        <form action="{{ url_for('submit_mcq') }}" method="post">
+        <form id="question_form" onsubmit="return validate()" action="{{ url_for('submit_mcq') }}" method="post">
             <p>{{ prompt }}</p>
             <br><br>
             {% for question in questions %}
@@ -20,6 +20,20 @@
                 </div>
             {% endfor %}
             <br>
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit">Submit</button>
         </form>
+        <script>
+            const button = document.getElementById("submit");
+            const question_form = document.getElementById("question_form")
+            function validate() {
+                button.addEventListener("click", function(event) {
+                    if (question_form.checkValidity()) {
+                        button.disabled = true;
+                        return true
+                    } else {
+                        return false
+                    }
+                })
+            }
+        </script>
 {% endblock content %}

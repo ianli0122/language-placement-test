@@ -7,7 +7,7 @@ class Session:
 	name: str
 	student_id: int
 	student_data: list
-	student_data_adv: list # TODO remove after tests
+	student_data_adv: list
 	section: int # 0: reading, 1: listening, 2: speaking, 3: writing computer, 4: writing paper
 	writing_prompt: int # index of typed prompt given
 
@@ -19,12 +19,12 @@ class Session:
 		self.student_id = student_id
 		self.name = name
 		self.student_data = []
-		self.student_data_adv = [[], []] # TODO remove after tests
+		self.student_data_adv = [[], []]
 		self.section = 0
 		self.reading = mcq.MCQ(0)
 		self.listening = mcq.MCQ(1)
 		self.free_response = frq.FRQ()
-		mkdir(f"data/student_data/{self.student_id}") # TODO better duplicate folder handling
+		mkdir(f"data/student_data/{self.student_id}")
 
 	def export_data(self) -> None:
 		data = {"name": self.name}
@@ -36,7 +36,7 @@ class Session:
 
 		with open(f'data/student_data/{self.student_id}/scores.json', 'w', encoding="utf-8") as file:
 			dump(data, file, indent=4)
-		with open(f'data/student_data/{self.student_id}/scores_adv.json', 'w') as file: # TODO remove after tests
+		with open(f'data/student_data/{self.student_id}/scores_adv.json', 'w') as file:
 			dump(self.student_data_adv, file, indent=4)
 
 _sessions: dict[str: Session] = {}
