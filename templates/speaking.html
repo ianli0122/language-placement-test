@@ -1,4 +1,7 @@
 {% extends "template.html" %}
+{% block head %}
+    <script src="../scripts/speaking.js"></script>
+{% endblock content %}
 {% block content %}
     <br>
     <form id="question_form" onsubmit="return validate()" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_speaking') }}">
