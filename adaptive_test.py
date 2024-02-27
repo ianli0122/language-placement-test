@@ -214,8 +214,8 @@ connection_label = ctk.CTkLabel(status_frame, text="Connection: ", font=("Arial"
 users_label = ctk.CTkLabel(status_frame, text="Active Connections: ", font=("Arial", 16, "bold"))
 connection = ctk.CTkLabel(status_frame, text="Blocked", text_color="red", font=("Arial", 14, "bold"))
 users = ctk.CTkLabel(status_frame, text="", font=("Arial", 14, "bold"))
-ip_label = ctk.CTkLabel(status_frame, text="\nIP Address: " + gethostbyname_ex(getfqdn())[2][1] + ":3001", font=("Arial", 16, "bold"))
-
+ip_label = ctk.CTkLabel(status_frame, text="\nIP Address: " + gethostbyname_ex(getfqdn())[1][0] + ":3001", font=("Arial", 16, "bold"))
+# ip_label = ctk.CTkLabel(status_frame, text="IP Address not found")
 
 '''Pack/Grid'''
 # Gridsetup

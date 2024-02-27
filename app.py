@@ -13,7 +13,7 @@ logging.basicConfig(filename=f'data/logs/{timeformat.tm_year}-{timeformat.tm_mon
 @app.before_request
 def check_active():
     if not allow_connections:
-        abort(403)
+        return "Test not started"
 
 def get_session() -> sessions: # return specific session
     return sessions.get_session(request.cookies.get('id'))
