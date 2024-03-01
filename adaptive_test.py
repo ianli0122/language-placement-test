@@ -1,10 +1,10 @@
 from os import kill, getpid, listdir, path
-from socket import getfqdn, gethostbyname_ex
 from threading import Thread
 from signal import SIGTERM
 from json import load
 from pygame import mixer
 import logging
+import socket
 import app, sessions
 import customtkinter as ctk
 from tkinter import ttk
@@ -214,8 +214,13 @@ connection_label = ctk.CTkLabel(status_frame, text="Connection: ", font=("Arial"
 users_label = ctk.CTkLabel(status_frame, text="Active Connections: ", font=("Arial", 16, "bold"))
 connection = ctk.CTkLabel(status_frame, text="Blocked", text_color="red", font=("Arial", 14, "bold"))
 users = ctk.CTkLabel(status_frame, text="", font=("Arial", 14, "bold"))
-ip_label = ctk.CTkLabel(status_frame, text="\nIP Address: " + gethostbyname_ex(getfqdn())[1][0] + ":3001", font=("Arial", 16, "bold"))
-# ip_label = ctk.CTkLabel(status_frame, text="IP Address not found")
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip_label = ctk.CTkLabel(status_frame, text="\nIP Address: " + s.getsockname()[0] + ":3001", font=("Arial", 16, "bold"))
+    s.close()
+except:
+    ip_label = ctk.CTkLabel(status_frame, text="IP Address not found")
 
 '''Pack/Grid'''
 # Gridsetup
