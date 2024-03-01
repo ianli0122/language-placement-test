@@ -28,7 +28,7 @@
     <form id="question_form" onsubmit="return validate()" action="{{ url_for('submit_mcq') }}" method="post">
         <div id="audio-container">
             <audio autoplay id="myAudio">
-                <source src="{{ url_for('static', filename='question_data/audio/' + audio) }}" type="audio/mp3"> <!--TODO modify directory for executable-->
+                <source src="{{ url_for('static', filename='question_data/audio/' + audio) }}" type="audio/mp3">
                 Your browser does not support this audio
             </audio>
 
